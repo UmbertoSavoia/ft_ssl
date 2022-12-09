@@ -4,6 +4,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+
+#define PRINT_DIGEST(digest, n)        \
+    do {                               \
+        for (int i = 0; i < n; ++i) {  \
+            printf("%02x", digest[i]); \
+        }                              \
+    } while (0)
 
 #define ROTATE_LEFT(x, n)           ((x << n) | (x >> (32 - n)))
 #define BYTE_TO_WORD(a, b, c, d)    (a | b << 8 | c << 16 | d << 24)

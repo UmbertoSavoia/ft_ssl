@@ -3,6 +3,10 @@
 
 #include "ft_ssl.h"
 
+#define S_FLAG 0b00000001
+#define Q_FLAG 0b00000010
+#define R_FLAG 0b00000100
+
 #define F(x,y,z) ((x & y) | (~x & z))
 #define G(x,y,z) ((x & z) | (y & ~z))
 #define H(x,y,z) (x ^ y ^ z)

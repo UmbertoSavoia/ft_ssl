@@ -4,8 +4,8 @@
 #include <unistd.h>
 #include <string.h>
 
-extern char *optarg;
-extern int  optind;
+extern char *ft_optarg;
+extern int  ft_optind;
 
 int ft_getopt(int argc, char *const argv[], const char *optstring);
 

@@ -1,5 +1,6 @@
 #include "ft_ssl.h"
 #include "ft_md5.h"
+#include "ft_getopt.h"
 
 static uint32_t S[] = {
         7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
@@ -122,17 +123,107 @@ void    md5_final(t_md5_ctx *ctx, uint8_t digest[])
     }
 }
 
-int     ft_md5(int ac, char **av)
+void    md5_stdin(int tee)
+{
+    int r = 0;
+    t_md5_ctx ctx = {0};
+    uint8_t buf[512] = {0};
+    uint8_t digest[16] = {0};
+
+    md5_init(&ctx);
+    while ((r = read(0, buf, sizeof(buf))) > 0) {
+        if (tee)
+            write(1, buf, r);
+        md5_update(&ctx, buf, r);
+    }
+    md5_final(&ctx, digest);
+    PRINT_DIGEST(digest, sizeof(digest));
+    printf("\n");
+}
+
+void    md5_file(char *filename, uint8_t opt)
+{
+    int fd = 0, r = 0;
+    t_md5_ctx ctx = {0};
+    uint8_t buf[512] = {0};
+    uint8_t digest[16] = {0};
+    errno = 0;
+
+    if ((fd = open(filename, O_RDONLY)) < 0) {
+        printf("%s: %s: %s\n", "ft_ssl", filename, strerror(errno));
+        return;
+    }
+    md5_init(&ctx);
+    while ((r = read(fd, buf, sizeof(buf))) > 0) {
+        md5_update(&ctx, buf, r);
+    }
+    md5_final(&ctx, digest);
+    close(fd);
+    if (opt & Q_FLAG) {
+        PRINT_DIGEST(digest, sizeof(digest));
+    } else if (opt & R_FLAG) {
+        PRINT_DIGEST(digest, sizeof(digest));
+        printf(" %s", filename);
+    } else {
+        printf("%s (%s) = ", "MD5", filename);
+        PRINT_DIGEST(digest, sizeof(digest));
+    }
+    printf("\n");
+}
+
+void    md5_string(char *str, uint8_t opt)
 {
     t_md5_ctx ctx = {0};
     uint8_t digest[16] = {0};
 
     md5_init(&ctx);
-    md5_update(&ctx, av[2], strlen(av[2]));
+    md5_update(&ctx, str, strlen(str));
     md5_final(&ctx, digest);
 
-    for (int i = 0; i < 16; ++i)
-        printf("%02x", digest[i]);
-    puts("");
+    if (opt & Q_FLAG) {
+        PRINT_DIGEST(digest, sizeof(digest));
+    } else if (opt & R_FLAG) {
+        PRINT_DIGEST(digest, sizeof(digest));
+        printf(" \"%s\"", str);
+    } else {
+        printf("%s (\"%s\") = ", "MD5", str);
+        PRINT_DIGEST(digest, sizeof(digest));
+    }
+    printf("\n");
+}
+
+int     ft_md5(int ac, char **av)
+{
+    uint8_t opt = 0;
+    int c = 0;
+    ft_optind = 2;
+
+    while ((c = ft_getopt(ac, av, "s:pqr")) != -1) {
+        switch (c) {
+            case 'p':
+                md5_stdin(1);
+                break;
+            case 'q':
+                opt |= Q_FLAG;
+                break;
+            case 'r':
+                opt |= R_FLAG;
+                break;
+            case 's':
+                md5_string(ft_optarg, opt);
+                break;
+            default:
+                printf("usage: %s md5 [flags] [file/string]", av[0]);
+        }
+    }
+    ac -= ft_optind;
+    av += ft_optind;
+    if (*av) {
+        while (*av) {
+            md5_file(*av, opt);
+            ++av;
+        }
+    } else if (!(opt & S_FLAG) && (ft_optind == 2 || (opt & Q_FLAG) || (opt & R_FLAG)))
+        md5_stdin(0);
     return 0;
 }
