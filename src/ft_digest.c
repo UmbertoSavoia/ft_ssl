@@ -62,7 +62,7 @@ void    digest_string(t_algo *algo, char *str, uint8_t opt)
     if (!(digest = malloc(algo->digest_len)))
         return ;
     algo->init();
-    algo->update(str, strlen(str));
+    algo->update((uint8_t *)str, strlen(str));
     algo->final(digest);
 
     if (opt & Q_FLAG) {
