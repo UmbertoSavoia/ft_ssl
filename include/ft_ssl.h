@@ -7,7 +7,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <stdlib.h>
 
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 #define PRINT_DIGEST(digest, n)        \
     do {                               \
         for (int i = 0; i < n; ++i) {  \
@@ -24,7 +26,6 @@ typedef struct  s_dispatch
     int (*func)(int, char **);
 }               t_dispatch;
 
-int     ft_md5(int ac, char **av);
-int     ft_sha256(int ac, char **av);
+int     ft_digest(int ac, char **av);
 
 #endif

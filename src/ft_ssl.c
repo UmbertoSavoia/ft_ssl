@@ -20,14 +20,14 @@ int     list_command(void)
 int     main(int ac, char **av)
 {
     t_dispatch dispatch[] = {
-            { .algo = "md5",    .func = &ft_md5 },
-            { .algo = "sha256", .func = &ft_sha256 },
+            { .algo = "md5",    .func = &ft_digest },
+            { .algo = "sha256", .func = &ft_digest },
     };
 
     if (ac < 2)
         return printf("usage: %s command [command opts] [command args]\n", av[0]);
 
-    for (int i = 0; i < sizeof(dispatch); ++i) {
+    for (int i = 0; i < ARRAY_SIZE(dispatch); ++i) {
         if (!memcmp(av[1], dispatch[i].algo, strlen(av[1])))
             return dispatch[i].func(ac, av);
     }

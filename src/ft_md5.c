@@ -1,6 +1,9 @@
 #include "ft_ssl.h"
 #include "ft_md5.h"
 #include "ft_getopt.h"
+#include "ft_digest.h"
+
+static t_md5_ctx ctx = {0};
 
 static uint32_t S[] = {
         7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
@@ -39,21 +42,21 @@ static uint8_t pad[] = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-void    md5_init(t_md5_ctx *ctx)
+void    md5_init(void)
 {
-    ctx->size = 0;
-    ctx->state[0] = 0x67452301;
-    ctx->state[1] = 0xefcdab89;
-    ctx->state[2] = 0x98badcfe;
-    ctx->state[3] = 0x10325476;
+    ctx.size = 0;
+    ctx.state[0] = 0x67452301;
+    ctx.state[1] = 0xefcdab89;
+    ctx.state[2] = 0x98badcfe;
+    ctx.state[3] = 0x10325476;
 }
 
-void    md5_transform(t_md5_ctx *ctx, uint32_t m[])
+void    md5_transform(uint32_t m[])
 {
-    uint32_t A = ctx->state[0];
-    uint32_t B = ctx->state[1];
-    uint32_t C = ctx->state[2];
-    uint32_t D = ctx->state[3];
+    uint32_t A = ctx.state[0];
+    uint32_t B = ctx.state[1];
+    uint32_t C = ctx.state[2];
+    uint32_t D = ctx.state[3];
     uint32_t FF = 0, g = 0;
 
     for (uint32_t i = 0; i < 64; ++i) {
@@ -76,154 +79,50 @@ void    md5_transform(t_md5_ctx *ctx, uint32_t m[])
         C = B;
         B = B + ROTATE_LEFT(FF, S[i]);
     }
-    ctx->state[0] += A;
-    ctx->state[1] += B;
-    ctx->state[2] += C;
-    ctx->state[3] += D;
+    ctx.state[0] += A;
+    ctx.state[1] += B;
+    ctx.state[2] += C;
+    ctx.state[3] += D;
 }
 
-void    md5_update(t_md5_ctx *ctx, uint8_t *input, size_t len)
+void    md5_update(uint8_t *input, size_t len)
 {
     uint32_t m[16] = {0};
-    uint32_t offset = ctx->size % 64;
-    ctx->size += len;
+    uint32_t offset = ctx.size % 64;
+    ctx.size += len;
 
     for (uint32_t i = 0; i < len; ++i) {
-        ctx->buffer[offset++] = input[i];
+        ctx.buffer[offset++] = input[i];
         if (!(offset % 64)) {
             for (uint32_t j = 0; j < 16; ++j)
-                m[j] = BYTE_TO_WORD(ctx->buffer[j*4], ctx->buffer[(j*4)+1],
-                                    ctx->buffer[(j*4)+2], ctx->buffer[(j*4)+3]);
-            md5_transform(ctx, m);
+                m[j] = BYTE_TO_WORD(ctx.buffer[j*4], ctx.buffer[(j*4)+1],
+                                    ctx.buffer[(j*4)+2], ctx.buffer[(j*4)+3]);
+            md5_transform(m);
             offset = 0;
         }
     }
 }
 
-void    md5_final(t_md5_ctx *ctx, uint8_t digest[])
+void    md5_final(uint8_t digest[])
 {
     uint32_t m[16] = {0};
-    uint32_t offset = ctx->size % 64;
+    uint32_t offset = ctx.size % 64;
     uint32_t pad_len = offset < 56 ? 56 - offset : (56 + 64) - offset;
 
-    md5_update(ctx, pad, pad_len);
-    ctx->size -= pad_len;
+    md5_update(pad, pad_len);
+    ctx.size -= pad_len;
     for (uint32_t i = 0; i < 14; ++i)
-        m[i] = BYTE_TO_WORD(ctx->buffer[i*4], ctx->buffer[(i*4)+1],
-                            ctx->buffer[(i*4)+2], ctx->buffer[(i*4)+3]);
-    m[14] = ctx->size * 8;
-    m[15] = (ctx->size * 8) >> 32;
-    md5_transform(ctx, m);
+        m[i] = BYTE_TO_WORD(ctx.buffer[i*4], ctx.buffer[(i*4)+1],
+                            ctx.buffer[(i*4)+2], ctx.buffer[(i*4)+3]);
+    m[14] = ctx.size * 8;
+    m[15] = (ctx.size * 8) >> 32;
+    md5_transform(m);
 
     for (uint32_t i = 0; i < 4; ++i) {
-        digest[i     ]  = ctx->state[0] >> (i * 8) & 0x000000ff;
-        digest[i +  4]  = ctx->state[1] >> (i * 8) & 0x000000ff;
-        digest[i +  8]  = ctx->state[2] >> (i * 8) & 0x000000ff;
-        digest[i + 12]  = ctx->state[3] >> (i * 8) & 0x000000ff;
+        digest[i     ]  = ctx.state[0] >> (i * 8) & 0x000000ff;
+        digest[i +  4]  = ctx.state[1] >> (i * 8) & 0x000000ff;
+        digest[i +  8]  = ctx.state[2] >> (i * 8) & 0x000000ff;
+        digest[i + 12]  = ctx.state[3] >> (i * 8) & 0x000000ff;
     }
-}
-
-void    md5_stdin(int tee)
-{
-    int r = 0;
-    t_md5_ctx ctx = {0};
-    uint8_t buf[512] = {0};
-    uint8_t digest[16] = {0};
-
-    md5_init(&ctx);
-    while ((r = read(0, buf, sizeof(buf))) > 0) {
-        if (tee)
-            write(1, buf, r);
-        md5_update(&ctx, buf, r);
-    }
-    md5_final(&ctx, digest);
-    PRINT_DIGEST(digest, sizeof(digest));
-    printf("\n");
-}
-
-void    md5_file(char *filename, uint8_t opt)
-{
-    int fd = 0, r = 0;
-    t_md5_ctx ctx = {0};
-    uint8_t buf[512] = {0};
-    uint8_t digest[16] = {0};
-    errno = 0;
-
-    if ((fd = open(filename, O_RDONLY)) < 0) {
-        printf("%s: %s: %s\n", "ft_ssl", filename, strerror(errno));
-        return;
-    }
-    md5_init(&ctx);
-    while ((r = read(fd, buf, sizeof(buf))) > 0) {
-        md5_update(&ctx, buf, r);
-    }
-    md5_final(&ctx, digest);
-    close(fd);
-    if (opt & Q_FLAG) {
-        PRINT_DIGEST(digest, sizeof(digest));
-    } else if (opt & R_FLAG) {
-        PRINT_DIGEST(digest, sizeof(digest));
-        printf(" %s", filename);
-    } else {
-        printf("%s (%s) = ", "MD5", filename);
-        PRINT_DIGEST(digest, sizeof(digest));
-    }
-    printf("\n");
-}
-
-void    md5_string(char *str, uint8_t opt)
-{
-    t_md5_ctx ctx = {0};
-    uint8_t digest[16] = {0};
-
-    md5_init(&ctx);
-    md5_update(&ctx, str, strlen(str));
-    md5_final(&ctx, digest);
-
-    if (opt & Q_FLAG) {
-        PRINT_DIGEST(digest, sizeof(digest));
-    } else if (opt & R_FLAG) {
-        PRINT_DIGEST(digest, sizeof(digest));
-        printf(" \"%s\"", str);
-    } else {
-        printf("%s (\"%s\") = ", "MD5", str);
-        PRINT_DIGEST(digest, sizeof(digest));
-    }
-    printf("\n");
-}
-
-int     ft_md5(int ac, char **av)
-{
-    uint8_t opt = 0;
-    int c = 0;
-    ft_optind = 2;
-
-    while ((c = ft_getopt(ac, av, "s:pqr")) != -1) {
-        switch (c) {
-            case 'p':
-                md5_stdin(1);
-                break;
-            case 'q':
-                opt |= Q_FLAG;
-                break;
-            case 'r':
-                opt |= R_FLAG;
-                break;
-            case 's':
-                md5_string(ft_optarg, opt);
-                break;
-            default:
-                printf("usage: %s md5 [flags] [file/string]", av[0]);
-        }
-    }
-    ac -= ft_optind;
-    av += ft_optind;
-    if (*av) {
-        while (*av) {
-            md5_file(*av, opt);
-            ++av;
-        }
-    } else if (!(opt & S_FLAG) && (ft_optind == 2 || (opt & Q_FLAG) || (opt & R_FLAG)))
-        md5_stdin(0);
-    return 0;
+    bzero(&ctx, sizeof(t_md5_ctx));
 }
