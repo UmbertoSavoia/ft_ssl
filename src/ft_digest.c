@@ -106,6 +106,7 @@ int     ft_digest(int ac, char **av)
                 opt |= R_FLAG;
                 break;
             case 's':
+                opt |= S_FLAG;
                 digest_string(p_algo, ft_optarg, opt);
                 break;
             default:
