@@ -18,6 +18,7 @@
     } while (0)
 
 #define ROTATE_LEFT(x, n)           ((x << n) | (x >> (32 - n)))
+#define ROTATE_RIGHT(x,n)           ((x >> n) | (x << (32 - n)))
 #define BYTE_TO_WORD(a, b, c, d)    (a | b << 8 | c << 16 | d << 24)
 
 typedef struct  s_dispatch
