@@ -1,18 +1,17 @@
 #include "ft_ssl.h"
 #include "ft_md5.h"
 #include "ft_getopt.h"
-#include "ft_digest.h"
 
 static t_md5_ctx ctx = {0};
 
-static uint32_t S[] = {
+static const uint32_t S[] = {
         7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
         5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
         4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
         6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 };
 
-static uint32_t K[] = {
+static const uint32_t K[] = {
         0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
         0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
         0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -77,7 +76,7 @@ void    md5_transform(uint32_t m[])
         A = D;
         D = C;
         C = B;
-        B = B + ROTATE_LEFT(FF, S[i]);
+        B = B + ROTATE_LEFT32(FF, S[i]);
     }
     ctx.state[0] += A;
     ctx.state[1] += B;
@@ -95,7 +94,7 @@ void    md5_update(uint8_t *input, size_t len)
         ctx.buffer[offset++] = input[i];
         if (!(offset % 64)) {
             for (uint32_t j = 0; j < 16; ++j)
-                m[j] = BYTE_TO_WORD(ctx.buffer[j*4], ctx.buffer[(j*4)+1],
+                m[j] = BYTE_TO_DWORD_LITTLE(ctx.buffer[j*4], ctx.buffer[(j*4)+1],
                                     ctx.buffer[(j*4)+2], ctx.buffer[(j*4)+3]);
             md5_transform(m);
             offset = 0;
@@ -112,17 +111,17 @@ void    md5_final(uint8_t digest[])
     md5_update(pad, pad_len);
     ctx.size -= pad_len;
     for (uint32_t i = 0; i < 14; ++i)
-        m[i] = BYTE_TO_WORD(ctx.buffer[i*4], ctx.buffer[(i*4)+1],
+        m[i] = BYTE_TO_DWORD_LITTLE(ctx.buffer[i*4], ctx.buffer[(i*4)+1],
                             ctx.buffer[(i*4)+2], ctx.buffer[(i*4)+3]);
     m[14] = ctx.size * 8;
     m[15] = (ctx.size * 8) >> 32;
     md5_transform(m);
 
     for (uint32_t i = 0; i < 4; ++i) {
-        digest[i     ]  = ctx.state[0] >> (i * 8) & 0x000000ff;
-        digest[i +  4]  = ctx.state[1] >> (i * 8) & 0x000000ff;
-        digest[i +  8]  = ctx.state[2] >> (i * 8) & 0x000000ff;
-        digest[i + 12]  = ctx.state[3] >> (i * 8) & 0x000000ff;
+        digest[i     ]  = ctx.state[0] >> (i * 8) & 0xff;
+        digest[i +  4]  = ctx.state[1] >> (i * 8) & 0xff;
+        digest[i +  8]  = ctx.state[2] >> (i * 8) & 0xff;
+        digest[i + 12]  = ctx.state[3] >> (i * 8) & 0xff;
     }
     bzero(&ctx, sizeof(t_md5_ctx));
 }

@@ -3,7 +3,7 @@
 
 static t_sha256_ctx ctx = {0};
 
-static uint32_t K[] = {
+static const uint32_t K[] = {
         0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,
         0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
         0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,
@@ -60,7 +60,7 @@ void    sha256_transform(void)
     uint32_t m[64] = {0};
 
     for (uint32_t j = 0; j < 16; ++j)
-        m[j] = (ctx.buffer[j*4] << 24) | (ctx.buffer[(j*4) + 1] << 16) | (ctx.buffer[(j*4) + 2] << 8) | (ctx.buffer[(j*4) + 3]);
+        m[j] = BYTE_TO_DWORD_BIG(ctx.buffer[j*4], ctx.buffer[(j*4) + 1], ctx.buffer[(j*4) + 2], ctx.buffer[(j*4) + 3]);
     for (uint32_t j = 16; j < 64; ++j)
         m[j] = SSIG1(m[j - 2]) + m[j - 7] + SSIG0(m[j - 15]) + m[j - 16];
 
@@ -119,14 +119,14 @@ void    sha256_final(uint8_t digest[])
     sha256_transform();
 
     for (uint32_t i = 0; i < 4; ++i) {
-        digest[i     ] = (ctx.state[0] >> (24 - i * 8)) & 0x000000ff;
-        digest[i +  4] = (ctx.state[1] >> (24 - i * 8)) & 0x000000ff;
-        digest[i +  8] = (ctx.state[2] >> (24 - i * 8)) & 0x000000ff;
-        digest[i + 12] = (ctx.state[3] >> (24 - i * 8)) & 0x000000ff;
-        digest[i + 16] = (ctx.state[4] >> (24 - i * 8)) & 0x000000ff;
-        digest[i + 20] = (ctx.state[5] >> (24 - i * 8)) & 0x000000ff;
-        digest[i + 24] = (ctx.state[6] >> (24 - i * 8)) & 0x000000ff;
-        digest[i + 28] = (ctx.state[7] >> (24 - i * 8)) & 0x000000ff;
+        digest[i     ] = (ctx.state[0] >> (24 - i * 8)) & 0xff;
+        digest[i +  4] = (ctx.state[1] >> (24 - i * 8)) & 0xff;
+        digest[i +  8] = (ctx.state[2] >> (24 - i * 8)) & 0xff;
+        digest[i + 12] = (ctx.state[3] >> (24 - i * 8)) & 0xff;
+        digest[i + 16] = (ctx.state[4] >> (24 - i * 8)) & 0xff;
+        digest[i + 20] = (ctx.state[5] >> (24 - i * 8)) & 0xff;
+        digest[i + 24] = (ctx.state[6] >> (24 - i * 8)) & 0xff;
+        digest[i + 28] = (ctx.state[7] >> (24 - i * 8)) & 0xff;
     }
     bzero(&ctx, sizeof(t_sha256_ctx));
 }

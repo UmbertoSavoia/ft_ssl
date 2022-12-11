@@ -20,8 +20,9 @@ int     list_command(void)
 int     main(int ac, char **av)
 {
     t_dispatch dispatch[] = {
-            { .algo = "md5",    .func = &ft_digest },
-            { .algo = "sha256", .func = &ft_digest },
+            { .algo = "md5",       .func = &ft_digest },
+            { .algo = "sha256",    .func = &ft_digest },
+            { .algo = "whirlpool", .func = &ft_digest }
     };
 
     if (ac < 2)

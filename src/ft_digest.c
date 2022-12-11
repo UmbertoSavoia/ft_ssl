@@ -1,6 +1,7 @@
 #include "ft_ssl.h"
 #include "ft_md5.h"
 #include "ft_sha256.h"
+#include "ft_whirlpool.h"
 #include "ft_digest.h"
 #include "ft_getopt.h"
 
@@ -83,7 +84,8 @@ int     ft_digest(int ac, char **av)
 {
     t_algo algo[] = {
             {.name_lo = "md5", .name_up = "MD5", .init = &md5_init, .update = &md5_update, .final = &md5_final, .digest_len = 16},
-            {.name_lo = "sha256", .name_up = "SHA256", .init = &sha256_init, .update = &sha256_update, .final = &sha256_final, .digest_len = 32}
+            {.name_lo = "sha256", .name_up = "SHA256", .init = &sha256_init, .update = &sha256_update, .final = &sha256_final, .digest_len = 32},
+            {.name_lo = "whirlpool", .name_up = "WHIRLPOOL", .init = &whirlpool_init, .update = &whirlpool_update, .final = &whirlpool_final, .digest_len = 64}
     };
     t_algo *p_algo = 0;
     uint8_t opt = 0;
