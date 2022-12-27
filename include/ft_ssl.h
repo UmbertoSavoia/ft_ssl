@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <byteswap.h>
+#include <errno.h>
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 #define PRINT_DIGEST(digest, n)        \
@@ -40,5 +42,9 @@ typedef struct  s_dispatch
 }               t_dispatch;
 
 int     ft_digest(int ac, char **av);
+int     ft_base64(int ac, char **av);
+
+size_t  ft_read(int fd, void *buf, size_t count);
+int     ft_open(char *file, int flag);
 
 #endif
