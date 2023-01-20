@@ -8,7 +8,8 @@ int     list_command(void)
            "rsautl\n\n"
            "Message Digest commands:\n"
            "md5\n"
-           "sha256\n\n"
+           "sha256\n"
+           "whirlpool\n\n"
            "Cipher commands:\n"
            "base64\n"
            "des\n"
@@ -23,7 +24,8 @@ int    dispatcher(int ac, char **av)
             { .algo = "md5",       .func = &ft_digest },
             { .algo = "sha256",    .func = &ft_digest },
             { .algo = "whirlpool", .func = &ft_digest },
-            { .algo = "base64",    .func = &ft_base64 }
+            { .algo = "base64",    .func = &ft_base64 },
+            { .algo = "des-ecb",   .func = &ft_cipher }
     };
 
     for (int i = 0; (i < ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {

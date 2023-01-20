@@ -23,3 +23,27 @@ int     ft_open(char *file, int flag)
         printf("ft_ssl: %s\n", strerror(errno));
     return fd;
 }
+
+uint8_t *str_to_hex(char *s, uint32_t bytes)
+{
+    uint8_t *padded = 0, *out = 0;
+    uint8_t in[3] = {0};
+
+    if (!(padded = malloc(bytes * 2)))
+        return 0;
+    if (!(out = malloc(bytes)))
+        return 0;
+    for (uint32_t i = 0; i < (bytes * 2); ++i) {
+        if (*s)
+            padded[i] = *s++;
+        else
+            padded[i] = '0';
+    }
+
+    for (uint32_t i = 0, j = 0; padded[j]; ++i, j += 2) {
+        memcpy(in, &padded[j], 2);
+        out[i] = strtol(in, 0, 16);
+    }
+    free(padded);
+    return out;
+}

@@ -5,7 +5,7 @@
 #include "ft_digest.h"
 #include "ft_getopt.h"
 
-void    digest_stdin(t_algo *algo, int tee)
+void    digest_stdin(t_digest *algo, int tee)
 {
     int r = 0;
     uint8_t buf[512] = {0};
@@ -25,7 +25,7 @@ void    digest_stdin(t_algo *algo, int tee)
     free(digest);
 }
 
-void    digest_file(t_algo *algo, char *filename, uint8_t opt)
+void    digest_file(t_digest *algo, char *filename, uint8_t opt)
 {
     int fd = 0, r = 0;
     uint8_t buf[512] = {0};
@@ -57,7 +57,7 @@ void    digest_file(t_algo *algo, char *filename, uint8_t opt)
     free(digest);
 }
 
-void    digest_string(t_algo *algo, char *str, uint8_t opt)
+void    digest_string(t_digest *algo, char *str, uint8_t opt)
 {
     uint8_t *digest = 0;
 
@@ -82,12 +82,12 @@ void    digest_string(t_algo *algo, char *str, uint8_t opt)
 
 int     ft_digest(int ac, char **av)
 {
-    t_algo algo[] = {
+    t_digest algo[] = {
             {.name_lo = "md5", .name_up = "MD5", .init = &md5_init, .update = &md5_update, .final = &md5_final, .digest_len = 16},
             {.name_lo = "sha256", .name_up = "SHA256", .init = &sha256_init, .update = &sha256_update, .final = &sha256_final, .digest_len = 32},
             {.name_lo = "whirlpool", .name_up = "WHIRLPOOL", .init = &whirlpool_init, .update = &whirlpool_update, .final = &whirlpool_final, .digest_len = 64}
     };
-    t_algo *p_algo = 0;
+    t_digest *p_algo = 0;
     uint8_t opt = 0;
     int c = 0;
     ft_optind = 2;

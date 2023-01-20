@@ -11,7 +11,7 @@ typedef void (*digest_init)(void);
 typedef void (*digest_update)(uint8_t *, size_t);
 typedef void (*digest_final)(uint8_t *);
 
-typedef struct  s_algo
+typedef struct  s_digest
 {
     char            name_lo[32];
     char            name_up[32];
@@ -19,6 +19,6 @@ typedef struct  s_algo
     digest_update   update;
     digest_final    final;
     uint32_t        digest_len;
-}               t_algo;
+}               t_digest;
 
 #endif
