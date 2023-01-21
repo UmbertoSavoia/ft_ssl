@@ -136,5 +136,20 @@ void    des_encrypt(uint8_t *input, uint8_t *output)
 
 void    des_decrypt(uint8_t *input, uint8_t *output)
 {
+    uint32_t l, r, t;
 
+    r = LOAD_DWORD_BIG(input + 0);
+    l = LOAD_DWORD_BIG(input + 4);
+
+    IP(r, l);
+
+    for(uint32_t i = 32; i > 0; i -= 4) {
+        ROUND(r, l, ctx.keys[i - 2], ctx.keys[i - 1]);
+        ROUND(l, r, ctx.keys[i - 4], ctx.keys[i - 3]);
+    }
+
+    IP_INV(l, r);
+
+    STORE_DWORD_BIG(l, output + 0);
+    STORE_DWORD_BIG(r, output + 4);
 }

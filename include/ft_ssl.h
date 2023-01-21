@@ -59,4 +59,7 @@ size_t  ft_read(int fd, void *buf, size_t count);
 int     ft_open(char *file, int flag);
 uint8_t *str_to_hex(char *s, uint32_t len_bit);
 
+void        pad_pkcs5(uint8_t *dest, uint32_t buf_len, uint32_t block_size);
+uint32_t    unpad_pkcs5(uint8_t *buf, uint32_t buf_len, uint32_t block_size);
+
 #endif
