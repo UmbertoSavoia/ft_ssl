@@ -25,7 +25,9 @@ int    dispatcher(int ac, char **av)
             { .algo = "sha256",    .func = &ft_digest },
             { .algo = "whirlpool", .func = &ft_digest },
             { .algo = "base64",    .func = &ft_base64 },
-            { .algo = "des-ecb",   .func = &ft_cipher }
+            { .algo = "des",       .func = &ft_cipher },
+            { .algo = "des-ecb",   .func = &ft_cipher },
+            { .algo = "des-cbc",   .func = &ft_cipher }
     };
 
     for (int i = 0; (i < ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {

@@ -42,5 +42,7 @@ typedef struct  s_cipher_modes
 
 void    ecb_encrypt(t_cipher *cipher, t_mode_arg *args);
 void    ecb_decrypt(t_cipher *cipher, t_mode_arg *args);
+void    cbc_encrypt(t_cipher *cipher, t_mode_arg *args);
+void    cbc_decrypt(t_cipher *cipher, t_mode_arg *args);
 
 #endif

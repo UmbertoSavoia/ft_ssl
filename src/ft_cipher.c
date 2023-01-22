@@ -48,10 +48,13 @@ void    get_option(int ac, char **av, t_mode_arg *args, uint32_t block_size)
 int     ft_cipher(int ac, char **av)
 {
     t_cipher ciphers[] = {
-            { .name = "des-ecb", .block_size = DES_BLOCK_SIZE, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt }
+            { .name = "des",     .block_size = DES_BLOCK_SIZE, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
+            { .name = "des-ecb", .block_size = DES_BLOCK_SIZE, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
+            { .name = "des-cbc", .block_size = DES_BLOCK_SIZE, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt }
     };
     t_cipher_modes modes[] = {
-            { .name = "-ecb", .encrypt = ecb_encrypt, .decrypt = ecb_decrypt }
+            { .name = "-ecb", .encrypt = ecb_encrypt, .decrypt = ecb_decrypt },
+            { .name = "-cbc", .encrypt = cbc_encrypt, .decrypt = cbc_decrypt }
     };
     t_mode_arg args = {0};
     args.fd_out = args.flags = 1;
@@ -62,7 +65,7 @@ int     ft_cipher(int ac, char **av)
     get_option(ac, av, &args, ciphers[idx_cipher].block_size);
 
     for (uint32_t i = 0; i < (sizeof(modes) / sizeof(modes[0])); ++i) {
-        if (strstr(av[1], modes->name)) {
+        if (strstr(av[1], modes[i].name)) {
             if (args.flags & E_FLAG)
                 modes[i].encrypt(&ciphers[idx_cipher], &args);
             else if (args.flags & D_FLAG)

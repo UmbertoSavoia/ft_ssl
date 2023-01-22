@@ -29,7 +29,7 @@ uint8_t *str_to_hex(char *s, uint32_t bytes)
     uint8_t *padded = 0, *out = 0;
     uint8_t in[3] = {0};
 
-    if (!(padded = malloc(bytes * 2)))
+    if (!(padded = calloc((bytes * 2) + 1, sizeof(uint8_t))))
         return 0;
     if (!(out = malloc(bytes)))
         return 0;
