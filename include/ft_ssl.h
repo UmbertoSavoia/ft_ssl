@@ -1,6 +1,8 @@
 #ifndef FT_SSL_H
 #define FT_SSL_H
 
+#define _GNU_SOURCE
+#include <sys/mman.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -65,6 +67,7 @@ size_t  ft_read(int fd, void *buf, size_t count);
 int     ft_open(char *file, int flag);
 uint8_t *str_to_hex(char *s, uint32_t len_bit);
 int     key_derivation(t_mode_arg *args, uint32_t block_size);
+void    resolve_base64(t_mode_arg *args);
 
 void        pad_pkcs5(uint8_t *dest, uint32_t buf_len, uint32_t block_size);
 uint32_t    unpad_pkcs5(uint8_t *buf, uint32_t buf_len, uint32_t block_size);

@@ -1,5 +1,6 @@
 #include "ft_ssl.h"
 #include "ft_sha256.h"
+#include "ft_base64.h"
 
 size_t    ft_read(int fd, void *buf, size_t count)
 {
@@ -83,4 +84,22 @@ int     key_derivation(t_mode_arg *args, uint32_t block_size)
         }
     }
     return 0;
+}
+
+void    resolve_base64(t_mode_arg *args)
+{
+    int fd_cache = 0;
+
+    if (!(args->flags & A_FLAG))
+        return;
+    fd_cache = memfd_create("cache", 0);
+    if (args->flags & E_FLAG) {
+        args->fd_cache = args->fd_out;
+        args->fd_out = fd_cache;
+    } else if (args->flags & D_FLAG) {
+        decode_base64(args->fd_in, fd_cache);
+        close(args->fd_in);
+        lseek(fd_cache, 0, SEEK_SET);
+        args->fd_in = fd_cache;
+    }
 }

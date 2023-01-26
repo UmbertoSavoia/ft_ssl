@@ -1,10 +1,8 @@
 #include "ft_ssl.h"
 #include "ft_cipher.h"
-#include "ft_digest.h"
-#include "ft_sha256.h"
 #include "ft_getopt.h"
+#include "ft_base64.h"
 #include "ft_des.h"
-#include "pbkdf.h"
 
 uint32_t search_cipher(t_cipher *ciphers, uint32_t len_ciphers, char *name)
 {
@@ -69,6 +67,7 @@ int     ft_cipher(int ac, char **av)
 
     idx_cipher = search_cipher(ciphers, sizeof(ciphers) / sizeof(ciphers[0]),av[1]);
     get_option(ac, av, &args, ciphers[idx_cipher].block_size);
+    resolve_base64(&args);
 
     if (!key_derivation(&args, ciphers[idx_cipher].block_size)) {
         for (uint32_t i = 0; i < (sizeof(modes) / sizeof(modes[0])); ++i) {
@@ -79,6 +78,10 @@ int     ft_cipher(int ac, char **av)
                     modes[i].decrypt(&ciphers[idx_cipher], &args);
             }
         }
+    }
+    if ((args.flags & A_FLAG) && (args.flags & E_FLAG)) {
+        lseek(args.fd_out, 0, SEEK_SET);
+        encode_base64(args.fd_out, args.fd_cache);
     }
 
     if (args.key) free(args.key);

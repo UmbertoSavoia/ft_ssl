@@ -24,6 +24,7 @@ typedef struct s_mode_arg
 {
     int         fd_in;
     int         fd_out;
+    int         fd_cache;
     uint32_t    key_len;
     uint8_t     *key;
     uint8_t     *iv;
