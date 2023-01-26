@@ -27,7 +27,7 @@ typedef struct s_mode_arg
     uint32_t    key_len;
     uint8_t     *key;
     uint8_t     *iv;
-    char        *salt;
+    uint8_t     *salt;
     char        *pass;
     uint8_t     flags;
 }               t_mode_arg;

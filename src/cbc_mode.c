@@ -6,7 +6,7 @@ void    cbc_encrypt(t_cipher *cipher, t_mode_arg *args)
     uint32_t r = 0;
     uint8_t *in = 0, *out = 0, final_pad = 1;
 
-    if (!(args->iv))
+    if (!(args->iv) || !(args->key))
         return;
     if (!(in = malloc(cipher->block_size)))
         return;

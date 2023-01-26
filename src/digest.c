@@ -20,7 +20,7 @@ void    digest_stdin(t_digest *algo, int tee)
         algo->update(buf, r);
     }
     algo->final(digest);
-    PRINT_DIGEST(digest, algo->digest_len);
+    PRINT_HEX(digest, algo->digest_len);
     printf("\n");
     free(digest);
 }
@@ -45,13 +45,13 @@ void    digest_file(t_digest *algo, char *filename, uint8_t opt)
     algo->final(digest);
     close(fd);
     if (opt & Q_FLAG) {
-        PRINT_DIGEST(digest, algo->digest_len);
+        PRINT_HEX(digest, algo->digest_len);
     } else if (opt & R_FLAG) {
-        PRINT_DIGEST(digest, algo->digest_len);
+        PRINT_HEX(digest, algo->digest_len);
         printf(" %s", filename);
     } else {
         printf("%s (%s) = ", algo->name_up, filename);
-        PRINT_DIGEST(digest, algo->digest_len);
+        PRINT_HEX(digest, algo->digest_len);
     }
     printf("\n");
     free(digest);
@@ -68,13 +68,13 @@ void    digest_string(t_digest *algo, char *str, uint8_t opt)
     algo->final(digest);
 
     if (opt & Q_FLAG) {
-        PRINT_DIGEST(digest, algo->digest_len);
+        PRINT_HEX(digest, algo->digest_len);
     } else if (opt & R_FLAG) {
-        PRINT_DIGEST(digest, algo->digest_len);
+        PRINT_HEX(digest, algo->digest_len);
         printf(" \"%s\"", str);
     } else {
         printf("%s (\"%s\") = ", algo->name_up, str);
-        PRINT_DIGEST(digest, algo->digest_len);
+        PRINT_HEX(digest, algo->digest_len);
     }
     printf("\n");
     free(digest);

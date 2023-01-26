@@ -36,7 +36,7 @@ void    get_option(int ac, char **av, t_mode_arg *args, uint32_t block_size)
                 args->iv = str_to_hex(ft_optarg, block_size);
                 break;
             case 's':
-                args->salt = ft_optarg;
+                args->salt = str_to_hex(ft_optarg, block_size);
                 break;
             case 'a':
                 args->flags |= A_FLAG;
@@ -70,17 +70,21 @@ int     ft_cipher(int ac, char **av)
     idx_cipher = search_cipher(ciphers, sizeof(ciphers) / sizeof(ciphers[0]),av[1]);
     get_option(ac, av, &args, ciphers[idx_cipher].block_size);
 
-    for (uint32_t i = 0; i < (sizeof(modes) / sizeof(modes[0])); ++i) {
-        if (strstr(av[1], modes[i].name)) {
-            if (args.flags & E_FLAG)
-                modes[i].encrypt(&ciphers[idx_cipher], &args);
-            else if (args.flags & D_FLAG)
-                modes[i].decrypt(&ciphers[idx_cipher], &args);
+    if (!key_derivation(&args, ciphers[idx_cipher].block_size)) {
+        for (uint32_t i = 0; i < (sizeof(modes) / sizeof(modes[0])); ++i) {
+            if (strstr(av[1], modes[i].name)) {
+                if (args.flags & E_FLAG)
+                    modes[i].encrypt(&ciphers[idx_cipher], &args);
+                else if (args.flags & D_FLAG)
+                    modes[i].decrypt(&ciphers[idx_cipher], &args);
+            }
         }
     }
 
     if (args.key) free(args.key);
     if (args.iv) free(args.iv);
+    if (args.salt) free(args.salt);
     if (args.fd_in != 0) close(args.fd_in);
     if (args.fd_out != 1) close(args.fd_out);
+    return 0;
 }

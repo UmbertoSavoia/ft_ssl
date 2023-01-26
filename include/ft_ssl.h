@@ -12,15 +12,18 @@
 #include <errno.h>
 
 #include "ft_digest.h"
+#include "ft_cipher.h"
+#include "pbkdf.h"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
-#define PRINT_DIGEST(digest, n)        \
+#define PRINT_HEX(digest, n)        \
     do {                               \
         for (int i = 0; i < n; ++i) {  \
             printf("%02x", digest[i]); \
         }                              \
     } while (0)
 
+#define SALTED "Salted__"
 #define ROTATE_LEFT32(x, n)   ((x << n) | (x >> (32 - n)))
 #define ROTATE_RIGHT32(x,n)   ((x >> n) | (x << (32 - n)))
 #define ROTATE_RIGHT64(x, n)  ((x >> n) | (x << (64 - n)))
@@ -61,6 +64,7 @@ int     ft_cipher(int ac, char **av);
 size_t  ft_read(int fd, void *buf, size_t count);
 int     ft_open(char *file, int flag);
 uint8_t *str_to_hex(char *s, uint32_t len_bit);
+int     key_derivation(t_mode_arg *args, uint32_t block_size);
 
 void        pad_pkcs5(uint8_t *dest, uint32_t buf_len, uint32_t block_size);
 uint32_t    unpad_pkcs5(uint8_t *buf, uint32_t buf_len, uint32_t block_size);

@@ -1,4 +1,5 @@
 #include "ft_ssl.h"
+#include "ft_sha256.h"
 
 size_t    ft_read(int fd, void *buf, size_t count)
 {
@@ -46,4 +47,40 @@ uint8_t *str_to_hex(char *s, uint32_t bytes)
     }
     free(padded);
     return out;
+}
+
+int     key_derivation(t_mode_arg *args, uint32_t block_size)
+{
+    if (args->key)
+        return 0;
+    if (!(args->pass) || !(args->salt))
+        return -1;
+    t_digest hash = {
+            .init = sha256_init, .update = sha256_update, .final = sha256_final,
+            .block_size = SHA256_BLOCK_SIZE, .digest_len = SHA256_DIGEST_SIZE
+    };
+    uint8_t *derived = 0;
+
+    if (!(derived = malloc(block_size)))
+        return -1;
+    pbkdf2(&hash,
+           args->pass, strlen(args->pass),
+           args->salt, strlen(args->salt),
+           PBKDF_ITERATIONS_DEFAULT,
+            derived, block_size);
+    args->key = derived;
+
+    if (args->flags & E_FLAG)
+        dprintf(args->fd_out, "%s%s", SALTED, args->salt);
+
+    if (args->flags & D_FLAG) {
+        char buf[8] = {0};
+        read(args->fd_in, buf, sizeof(buf));
+        if (!memcmp(buf, SALTED, strlen(SALTED))) {
+            read(args->fd_in, buf, sizeof(buf));
+        } else {
+            lseek(args->fd_in, 0, SEEK_SET);
+        }
+    }
+    return 0;
 }
