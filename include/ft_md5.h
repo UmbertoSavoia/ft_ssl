@@ -8,6 +8,9 @@
 #define H(x,y,z) (x ^ y ^ z)
 #define I(x,y,z) (y ^ (x | ~z))
 
+#define MD5_BLOCK_SIZE 64
+#define MD5_DIGEST_SIZE 16
+
 typedef struct  s_md5_ctx
 {
     uint64_t    size;

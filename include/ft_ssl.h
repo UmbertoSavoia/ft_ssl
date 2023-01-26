@@ -11,6 +11,8 @@
 #include <byteswap.h>
 #include <errno.h>
 
+#include "ft_digest.h"
+
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 #define PRINT_DIGEST(digest, n)        \
     do {                               \
@@ -22,7 +24,8 @@
 #define ROTATE_LEFT32(x, n)   ((x << n) | (x >> (32 - n)))
 #define ROTATE_RIGHT32(x,n)   ((x >> n) | (x << (32 - n)))
 #define ROTATE_RIGHT64(x, n)  ((x >> n) | (x << (64 - n)))
-
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define BYTE_TO_DWORD_LITTLE(a,b,c,d)      (a | b << 8 | c << 16 | d << 24)
 #define BYTE_TO_DWORD_BIG(a,b,c,d)         (a << 24 | b << 16 | c << 8 | d)
 #define BSWAP64(x)                              \

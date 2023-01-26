@@ -1,7 +1,10 @@
 #include "ft_ssl.h"
 #include "ft_cipher.h"
+#include "ft_digest.h"
+#include "ft_sha256.h"
 #include "ft_getopt.h"
 #include "ft_des.h"
+#include "pbkdf.h"
 
 uint32_t search_cipher(t_cipher *ciphers, uint32_t len_ciphers, char *name)
 {
@@ -40,6 +43,9 @@ void    get_option(int ac, char **av, t_mode_arg *args, uint32_t block_size)
                 break;
             case 'd':
                 args->flags ^= D_FLAG | E_FLAG;
+                break;
+            case 'p':
+                args->pass = ft_optarg;
                 break;
         }
     }

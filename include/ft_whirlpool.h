@@ -16,6 +16,9 @@
    b ^= c;                                                      \
 }
 
+#define WHIRLPOOL_BLOCK_SIZE 64
+#define WHIRLPOOL_DIGEST_SIZE 64
+
 typedef struct  s_whirlpool_ctx
 {
     uint64_t    size;

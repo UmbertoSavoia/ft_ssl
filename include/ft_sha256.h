@@ -11,6 +11,9 @@
 #define SSIG0(x)   (ROTATE_RIGHT32(x,7) ^ ROTATE_RIGHT32(x,18) ^ (x >> 3))
 #define SSIG1(x)   (ROTATE_RIGHT32(x,17) ^ ROTATE_RIGHT32(x,19) ^ (x >> 10))
 
+#define SHA256_BLOCK_SIZE 64
+#define SHA256_DIGEST_SIZE 32
+
 typedef struct  s_sha256_ctx
 {
     uint64_t    size;

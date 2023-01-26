@@ -19,6 +19,7 @@ typedef struct  s_digest
     digest_update   update;
     digest_final    final;
     uint32_t        digest_len;
+    uint32_t        block_size;
 }               t_digest;
 
 #endif

@@ -83,9 +83,9 @@ void    digest_string(t_digest *algo, char *str, uint8_t opt)
 int     ft_digest(int ac, char **av)
 {
     t_digest algo[] = {
-            {.name_lo = "md5", .name_up = "MD5", .init = &md5_init, .update = &md5_update, .final = &md5_final, .digest_len = 16},
-            {.name_lo = "sha256", .name_up = "SHA256", .init = &sha256_init, .update = &sha256_update, .final = &sha256_final, .digest_len = 32},
-            {.name_lo = "whirlpool", .name_up = "WHIRLPOOL", .init = &whirlpool_init, .update = &whirlpool_update, .final = &whirlpool_final, .digest_len = 64}
+            {.name_lo = "md5", .name_up = "MD5", .init = &md5_init, .update = &md5_update, .final = &md5_final, .digest_len = MD5_DIGEST_SIZE},
+            {.name_lo = "sha256", .name_up = "SHA256", .init = &sha256_init, .update = &sha256_update, .final = &sha256_final, .digest_len = SHA256_DIGEST_SIZE},
+            {.name_lo = "whirlpool", .name_up = "WHIRLPOOL", .init = &whirlpool_init, .update = &whirlpool_update, .final = &whirlpool_final, .digest_len = WHIRLPOOL_DIGEST_SIZE}
     };
     t_digest *p_algo = 0;
     uint8_t opt = 0;
