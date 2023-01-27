@@ -3,16 +3,17 @@
 #include "ft_getopt.h"
 #include "ft_base64.h"
 #include "ft_des.h"
+#include "ft_des3.h"
 
 uint32_t search_cipher(t_cipher *ciphers, uint32_t len_ciphers, char *name)
 {
     for (uint32_t i = 0; i < len_ciphers; ++i)
-        if (!memcmp(name, ciphers[i].name, strlen(ciphers[i].name)))
+        if (!memcmp(name, ciphers[i].name, strlen(name)))
             return i;
     return 0;
 }
 
-void    get_option(int ac, char **av, t_mode_arg *args, uint32_t block_size)
+void    get_option(int ac, char **av, t_mode_arg *args, uint32_t key_size)
 {
     int c = 0;
 
@@ -27,14 +28,13 @@ void    get_option(int ac, char **av, t_mode_arg *args, uint32_t block_size)
                     return ;
                 break;
             case 'k':
-                args->key = str_to_hex(ft_optarg, block_size);
-                args->key_len = block_size;
+                args->key = str_to_hex(ft_optarg, key_size);
                 break;
             case 'v':
-                args->iv = str_to_hex(ft_optarg, block_size);
+                args->iv = str_to_hex(ft_optarg, key_size);
                 break;
             case 's':
-                args->salt = str_to_hex(ft_optarg, block_size);
+                args->salt = str_to_hex(ft_optarg, key_size);
                 break;
             case 'a':
                 args->flags |= A_FLAG;
@@ -52,9 +52,11 @@ void    get_option(int ac, char **av, t_mode_arg *args, uint32_t block_size)
 int     ft_cipher(int ac, char **av)
 {
     t_cipher ciphers[] = {
-            { .name = "des",     .block_size = DES_BLOCK_SIZE, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
-            { .name = "des-ecb", .block_size = DES_BLOCK_SIZE, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
-            { .name = "des-cbc", .block_size = DES_BLOCK_SIZE, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt }
+            //{ .name = "des",      .block_size = DES_BLOCK_SIZE, .key_size = 8, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
+            { .name = "des-ecb",  .block_size = DES_BLOCK_SIZE, .key_size = 8, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
+            { .name = "des-cbc",  .block_size = DES_BLOCK_SIZE, .key_size = 8, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
+            { .name = "des3-ecb", .block_size = DES3_BLOCK_SIZE, .key_size = 24, .init = &des3_init, .encrypt = &des3_encrypt, .decrypt = &des3_decrypt },
+            { .name = "des3-cbc", .block_size = DES3_BLOCK_SIZE, .key_size = 24, .init = &des3_init, .encrypt = &des3_encrypt, .decrypt = &des3_decrypt },
     };
     t_cipher_modes modes[] = {
             { .name = "-ecb", .encrypt = ecb_encrypt, .decrypt = ecb_decrypt },
@@ -66,7 +68,7 @@ int     ft_cipher(int ac, char **av)
     uint32_t idx_cipher = 0;
 
     idx_cipher = search_cipher(ciphers, sizeof(ciphers) / sizeof(ciphers[0]),av[1]);
-    get_option(ac, av, &args, ciphers[idx_cipher].block_size);
+    get_option(ac, av, &args, ciphers[idx_cipher].key_size);
     resolve_base64(&args);
 
     if (!key_derivation(&args, ciphers[idx_cipher].block_size)) {

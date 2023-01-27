@@ -13,7 +13,7 @@ void    ecb_encrypt(t_cipher *cipher, t_mode_arg *args)
     if (!(out = malloc(cipher->block_size)))
         return;
 
-    cipher->init(args->key, args->key_len);
+    cipher->init(args->key, cipher->key_size);
     while ((r = ft_read(args->fd_in, in, cipher->block_size)) > 0) {
         if (r < cipher->block_size) {
             pad_pkcs5(&in[r], r, cipher->block_size);
@@ -42,7 +42,7 @@ void    ecb_decrypt(t_cipher *cipher, t_mode_arg *args)
     if (!(out = malloc(cipher->block_size)))
         return;
 
-    cipher->init(args->key, args->key_len);
+    cipher->init(args->key, cipher->key_size);
     while ((r = ft_read(args->fd_in, in, cipher->block_size)) > 0) {
         cipher->decrypt(in, out);
         size = unpad_pkcs5(out, r, cipher->block_size);

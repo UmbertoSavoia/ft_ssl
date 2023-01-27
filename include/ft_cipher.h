@@ -15,6 +15,7 @@ typedef struct  s_cipher
 {
     char            name[32];
     size_t          block_size;
+    size_t          key_size;
     cipher_init     init;
     cipher_encrypt  encrypt;
     cipher_decrypt  decrypt;
@@ -25,7 +26,6 @@ typedef struct s_mode_arg
     int         fd_in;
     int         fd_out;
     int         fd_cache;
-    uint32_t    key_len;
     uint8_t     *key;
     uint8_t     *iv;
     uint8_t     *salt;
