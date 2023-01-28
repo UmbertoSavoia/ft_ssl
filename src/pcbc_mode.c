@@ -1,7 +1,7 @@
 #include "ft_ssl.h"
 #include "ft_cipher.h"
 
-void    cbc_encrypt(t_cipher *cipher, t_mode_arg *args)
+void    pcbc_encrypt(t_cipher *cipher, t_mode_arg *args)
 {
     uint32_t r = 0;
     uint8_t *in = 0, *out = 0, final_pad = 1;
@@ -22,7 +22,10 @@ void    cbc_encrypt(t_cipher *cipher, t_mode_arg *args)
         for(uint32_t i = 0; i < cipher->block_size; i++)
             out[i] = in[i] ^ args->iv[i];
         cipher->encrypt(out, out);
-        memcpy(args->iv, out, cipher->block_size);
+
+        for (uint32_t i = 0; i < cipher->block_size; ++i)
+            args->iv[i] = in[i] ^ out[i];
+
         write(args->fd_out, out, cipher->block_size);
     }
     if (final_pad) {
@@ -32,12 +35,11 @@ void    cbc_encrypt(t_cipher *cipher, t_mode_arg *args)
         cipher->encrypt(out, out);
         write(args->fd_out, out, cipher->block_size);
     }
-
     free(in);
     free(out);
 }
 
-void    cbc_decrypt(t_cipher *cipher, t_mode_arg *args)
+void    pcbc_decrypt(t_cipher *cipher, t_mode_arg *args)
 {
     uint8_t t[16] = {0};
     uint32_t r = 0, size = 0;;
@@ -57,9 +59,10 @@ void    cbc_decrypt(t_cipher *cipher, t_mode_arg *args)
         for(uint32_t i = 0; i < cipher->block_size; i++)
             out[i] ^= (args->iv)[i];
         size = unpad_pkcs5(out, r, cipher->block_size);
-        memcpy(args->iv, t, cipher->block_size);
+        for (uint32_t i = 0; i < cipher->block_size; ++i)
+            args->iv[i] = t[i] ^ out[i];
         write(args->fd_out, out, size);
-}
+    }
 
     free(in);
     free(out);

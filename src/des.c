@@ -94,6 +94,7 @@ void    des_init(uint8_t *key, uint32_t key_len)
 {
     uint32_t i = 0, c = 0, d = 0, t = 0;
 
+    bzero(&ctx, sizeof(t_des_ctx));
     c = LOAD_DWORD_BIG(key + 0);
     d = LOAD_DWORD_BIG(key + 4);
 
@@ -132,7 +133,6 @@ void    des_encrypt(uint8_t *input, uint8_t *output)
 
     STORE_DWORD_BIG(r, output + 0);
     STORE_DWORD_BIG(l, output + 4);
-    bzero(&ctx, sizeof(t_des_ctx));
 }
 
 void    des_decrypt(uint8_t *input, uint8_t *output)
@@ -153,5 +153,4 @@ void    des_decrypt(uint8_t *input, uint8_t *output)
 
     STORE_DWORD_BIG(l, output + 0);
     STORE_DWORD_BIG(r, output + 4);
-    bzero(&ctx, sizeof(t_des_ctx));
 }

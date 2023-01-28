@@ -55,12 +55,15 @@ int     ft_cipher(int ac, char **av)
             //{ .name = "des",      .block_size = DES_BLOCK_SIZE, .key_size = 8, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
             { .name = "des-ecb",  .block_size = DES_BLOCK_SIZE, .key_size = 8, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
             { .name = "des-cbc",  .block_size = DES_BLOCK_SIZE, .key_size = 8, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
+            { .name = "des-pcbc",  .block_size = DES_BLOCK_SIZE, .key_size = 8, .init = &des_init, .encrypt = &des_encrypt, .decrypt = &des_decrypt },
             { .name = "des3-ecb", .block_size = DES3_BLOCK_SIZE, .key_size = 24, .init = &des3_init, .encrypt = &des3_encrypt, .decrypt = &des3_decrypt },
             { .name = "des3-cbc", .block_size = DES3_BLOCK_SIZE, .key_size = 24, .init = &des3_init, .encrypt = &des3_encrypt, .decrypt = &des3_decrypt },
+            { .name = "des3-pcbc",  .block_size = DES_BLOCK_SIZE, .key_size = 24, .init = &des3_init, .encrypt = &des3_encrypt, .decrypt = &des3_decrypt },
     };
     t_cipher_modes modes[] = {
             { .name = "-ecb", .encrypt = ecb_encrypt, .decrypt = ecb_decrypt },
-            { .name = "-cbc", .encrypt = cbc_encrypt, .decrypt = cbc_decrypt }
+            { .name = "-cbc", .encrypt = cbc_encrypt, .decrypt = cbc_decrypt },
+            { .name = "-pcbc", .encrypt = pcbc_encrypt, .decrypt = pcbc_decrypt }
     };
     t_mode_arg args = {0};
     args.fd_out = args.flags = 1;

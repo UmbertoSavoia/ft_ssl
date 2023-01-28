@@ -28,6 +28,7 @@ int    dispatcher(int ac, char **av)
             //{ .algo = "des",       .func = &ft_cipher },
             { .algo = "des-ecb",   .func = &ft_cipher },
             { .algo = "des-cbc",   .func = &ft_cipher },
+            { .algo = "des-pcbc",  .func = &ft_cipher },
             { .algo = "des3-ecb",  .func = &ft_cipher },
             { .algo = "des3-cbc",  .func = &ft_cipher },
     };
