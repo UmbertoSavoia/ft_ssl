@@ -14,7 +14,9 @@ int     list_command(void)
            "base64\n"
            "des\n"
            "des-ecb\n"
-           "des-cbc\n");
+           "des-cbc\n"
+           "des-pcbc\n"
+           );
     return 1;
 }
 
@@ -29,8 +31,13 @@ int    dispatcher(int ac, char **av)
             { .algo = "des-ecb",   .func = &ft_cipher },
             { .algo = "des-cbc",   .func = &ft_cipher },
             { .algo = "des-pcbc",  .func = &ft_cipher },
+            { .algo = "des-cfb",  .func = &ft_cipher },
+            { .algo = "des-ofb",  .func = &ft_cipher },
             { .algo = "des3-ecb",  .func = &ft_cipher },
             { .algo = "des3-cbc",  .func = &ft_cipher },
+            { .algo = "des3-pcbc",  .func = &ft_cipher },
+            { .algo = "des3-cfb",  .func = &ft_cipher },
+            { .algo = "des3-ofb",  .func = &ft_cipher },
     };
 
     for (int i = 0; (i < ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {

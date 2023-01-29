@@ -5,6 +5,7 @@ RM = rm -rf
 
 INC = ./include/
 SRC = $(wildcard ./src/*.c)
+SRC += $(wildcard ./src/block_mode/*.c)
 OBJ = $(SRC:.c=.o)
 
 %.o: %.c

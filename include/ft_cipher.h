@@ -48,5 +48,9 @@ void    cbc_encrypt(t_cipher *cipher, t_mode_arg *args);
 void    cbc_decrypt(t_cipher *cipher, t_mode_arg *args);
 void    pcbc_encrypt(t_cipher *cipher, t_mode_arg *args);
 void    pcbc_decrypt(t_cipher *cipher, t_mode_arg *args);
+void    cfb_encrypt(t_cipher *cipher, t_mode_arg *args);
+void    cfb_decrypt(t_cipher *cipher, t_mode_arg *args);
+void    ofb_encrypt(t_cipher *cipher, t_mode_arg *args);
+void    ofb_decrypt(t_cipher *cipher, t_mode_arg *args);
 
 #endif
