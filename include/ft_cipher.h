@@ -52,5 +52,7 @@ void    cfb_encrypt(t_cipher *cipher, t_mode_arg *args);
 void    cfb_decrypt(t_cipher *cipher, t_mode_arg *args);
 void    ofb_encrypt(t_cipher *cipher, t_mode_arg *args);
 void    ofb_decrypt(t_cipher *cipher, t_mode_arg *args);
+void    ctr_encrypt(t_cipher *cipher, t_mode_arg *args);
+void    ctr_decrypt(t_cipher *cipher, t_mode_arg *args);
 
 #endif

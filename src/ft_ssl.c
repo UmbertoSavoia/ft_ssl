@@ -16,6 +16,16 @@ int     list_command(void)
            "des-ecb\n"
            "des-cbc\n"
            "des-pcbc\n"
+           "des-cfb\n"
+           "des-ofb\n"
+           "des-ctr\n"
+           "des3\n"
+           "des3-ecb\n"
+           "des3-cbc\n"
+           "des3-pcbc\n"
+           "des3-cfb\n"
+           "des3-ofb\n"
+           "des3-ctr\n"
            );
     return 1;
 }
@@ -33,11 +43,13 @@ int    dispatcher(int ac, char **av)
             { .algo = "des-pcbc",  .func = &ft_cipher },
             { .algo = "des-cfb",  .func = &ft_cipher },
             { .algo = "des-ofb",  .func = &ft_cipher },
+            { .algo = "des-ctr",  .func = &ft_cipher },
             { .algo = "des3-ecb",  .func = &ft_cipher },
             { .algo = "des3-cbc",  .func = &ft_cipher },
             { .algo = "des3-pcbc",  .func = &ft_cipher },
             { .algo = "des3-cfb",  .func = &ft_cipher },
             { .algo = "des3-ofb",  .func = &ft_cipher },
+            { .algo = "des3-ctr",  .func = &ft_cipher },
     };
 
     for (int i = 0; (i < ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {

@@ -61,6 +61,7 @@ int     ft_cipher(int ac, char **av)
             { .name = "-pcbc", .encrypt = pcbc_encrypt, .decrypt = pcbc_decrypt },
             { .name = "-cfb", .encrypt = cfb_encrypt, .decrypt = cfb_decrypt },
             { .name = "-ofb", .encrypt = ofb_encrypt, .decrypt = ofb_decrypt },
+            { .name = "-ctr", .encrypt = ctr_encrypt, .decrypt = ctr_decrypt },
     };
     t_mode_arg args = {0};
     args.fd_out = args.flags = 1;
