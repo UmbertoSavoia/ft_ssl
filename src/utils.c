@@ -103,3 +103,82 @@ void    resolve_base64(t_mode_arg *args)
         args->fd_in = fd_cache;
     }
 }
+
+uint32_t    count_num_bits(uint64_t n)
+{
+    uint32_t count = 0;
+
+    while (n) {
+        count++;
+        n >>= 1;
+    }
+    return count;
+}
+
+int     generate_rand_range(uint64_t *ret, uint64_t lower, uint64_t upper)
+{
+    int fd = 0;
+
+    if ((fd = open("/dev/urandom", O_RDONLY)) < 0)
+        return -1;
+    if (read(fd, ret, sizeof(uint64_t)) < 0)
+        return -1;
+    close(fd);
+    *ret = (*ret % (upper - lower + 1)) + lower;
+    return 0;
+}
+
+// (a*b) (mod n)
+uint64_t mul_mod(uint64_t a, uint64_t b, uint64_t m)
+{
+    uint64_t d = 0, mp2 = m >> 1;
+
+    if (a >= m)
+        a %= m;
+    if (b >= m)
+        b %= m;
+    for (int i = 0; i < 64; ++i) {
+        d = (d > mp2) ? (d << 1) - m : d << 1;
+        if (a & 0x8000000000000000ULL)
+            d += b;
+        if (d >= m)
+            d -= m;
+        a <<= 1;
+    }
+    return d;
+}
+
+// (a^b) (mod m)
+uint64_t power_mod(uint64_t a, uint64_t b, uint64_t m)
+{
+    uint64_t r = m == 1 ? 0 : 1;
+    while (b > 0) {
+        if (b & 1)
+            r = mul_mod(r, a, m);
+        b = b >> 1;
+        a = mul_mod(a, a, m);
+    }
+    return r;
+}
+
+void    swap(uint64_t *a, uint64_t *b)
+{
+    uint64_t t = *a;
+
+    *a = *b;
+    *b = t;
+}
+
+__int128_t mul_inv(__int128_t n, __int128_t mod)
+{
+    __int128_t a = mod, b = a, c = 0, d = 0, e = 1, f, g;
+    for (n *= a > 1; n > 1 && (n *= a > 0); e = g, c = (c & 3) | (c & 1) << 2) {
+        g = d, d *= n / (f = a);
+        a = n % a, n = f;
+        c = (c & 6) | (c & 2) >> 1;
+        f = c > 1 && c < 6;
+        c = (c & 5) | (f || e > d ? (c & 4) >> 1 : ~c & 2);
+        d = f ? d + e : e > d ? e - d : d - e;
+    }
+    return n ? c & 4 ? b - e : e : 0;
+}

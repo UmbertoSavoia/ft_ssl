@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <byteswap.h>
 #include <errno.h>
+#include <math.h>
 
 #include "ft_digest.h"
 #include "ft_cipher.h"
@@ -59,17 +60,25 @@ typedef struct  s_dispatch
     int (*func)(int, char **);
 }               t_dispatch;
 
-int     ft_digest(int ac, char **av);
-int     ft_base64(int ac, char **av);
-int     ft_cipher(int ac, char **av);
+int         ft_digest(int ac, char **av);
+int         ft_base64(int ac, char **av);
+int         ft_cipher(int ac, char **av);
+int         genrsa(int ac, char **av);
 
-size_t  ft_read(int fd, void *buf, size_t count);
-int     ft_open(char *file, int flag);
-uint8_t *str_to_hex(char *s, uint32_t len_bit);
-int     key_derivation(t_mode_arg *args, uint32_t block_size);
-void    resolve_base64(t_mode_arg *args);
+size_t      ft_read(int fd, void *buf, size_t count);
+int         ft_open(char *file, int flag);
+uint8_t     *str_to_hex(char *s, uint32_t len_bit);
+int         key_derivation(t_mode_arg *args, uint32_t block_size);
+void        resolve_base64(t_mode_arg *args);
 
 void        pad_pkcs5(uint8_t *dest, uint32_t buf_len, uint32_t block_size);
 uint32_t    unpad_pkcs5(uint8_t *buf, uint32_t buf_len, uint32_t block_size);
+
+uint32_t    count_num_bits(uint64_t n);
+int         generate_rand_range(uint64_t *ret, uint64_t lower, uint64_t upper);
+uint64_t    mul_mod(uint64_t a, uint64_t b, uint64_t m);
+uint64_t    power_mod(uint64_t a, uint64_t b, uint64_t m);
+void        swap(uint64_t *a, uint64_t *b);
+__int128_t  mul_inv(__int128_t n, __int128_t mod);
 
 #endif

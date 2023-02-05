@@ -14,7 +14,7 @@ OBJ = $(SRC:.c=.o)
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(CFLAG) $(OBJ) -o $@
+	$(CC) $(CFLAG) $(OBJ) -o $@ -lm
 
 clean:
 	$(RM) $(OBJ)

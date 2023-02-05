@@ -33,23 +33,24 @@ int     list_command(void)
 int    dispatcher(int ac, char **av)
 {
     t_dispatch dispatch[] = {
-            { .algo = "md5",       .func = &ft_digest },
-            { .algo = "sha256",    .func = &ft_digest },
-            { .algo = "whirlpool", .func = &ft_digest },
-            { .algo = "base64",    .func = &ft_base64 },
+            { .algo = "md5",        .func = &ft_digest },
+            { .algo = "sha256",     .func = &ft_digest },
+            { .algo = "whirlpool",  .func = &ft_digest },
+            { .algo = "base64",     .func = &ft_base64 },
             //{ .algo = "des",       .func = &ft_cipher },
-            { .algo = "des-ecb",   .func = &ft_cipher },
-            { .algo = "des-cbc",   .func = &ft_cipher },
-            { .algo = "des-pcbc",  .func = &ft_cipher },
-            { .algo = "des-cfb",  .func = &ft_cipher },
-            { .algo = "des-ofb",  .func = &ft_cipher },
-            { .algo = "des-ctr",  .func = &ft_cipher },
+            { .algo = "des-ecb",    .func = &ft_cipher },
+            { .algo = "des-cbc",    .func = &ft_cipher },
+            { .algo = "des-pcbc",   .func = &ft_cipher },
+            { .algo = "des-cfb",    .func = &ft_cipher },
+            { .algo = "des-ofb",    .func = &ft_cipher },
+            { .algo = "des-ctr",    .func = &ft_cipher },
             { .algo = "des3-ecb",  .func = &ft_cipher },
             { .algo = "des3-cbc",  .func = &ft_cipher },
-            { .algo = "des3-pcbc",  .func = &ft_cipher },
+            { .algo = "des3-pcbc", .func = &ft_cipher },
             { .algo = "des3-cfb",  .func = &ft_cipher },
             { .algo = "des3-ofb",  .func = &ft_cipher },
             { .algo = "des3-ctr",  .func = &ft_cipher },
+            { .algo = "genrsa",    .func = &genrsa },
     };
 
     for (int i = 0; (i < ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {
