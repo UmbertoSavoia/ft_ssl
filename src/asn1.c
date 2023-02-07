@@ -82,3 +82,25 @@ void    asn1_pkcs1_rsa_private_key(t_rsa_key *key, int fd_out)
 
     close(fd_cache);
 }
+
+/*
+ *  PublicKeyInfo ::= SEQUENCE {
+ *    algorithm   AlgorithmIdentifier,
+ *    PublicKey   BIT STRING
+ *  }
+ *
+ *  AlgorithmIdentifier ::= SEQUENCE {
+ *    algorithm   OBJECT IDENTIFIER,
+ *    parameters  ANY DEFINED BY algorithm OPTIONAL
+ *  }
+ *
+ * https://www.rfc-editor.org/rfc/rfc3447#page-44
+ *    RSAPublicKey ::= SEQUENCE {
+ *        modulus           INTEGER,  -- n
+ *        publicExponent    INTEGER   -- e
+ *    }
+*/
+void    asn1_pkcs1_rsa_public_key(t_rsa_key *key, int fd_out)
+{
+
+}
