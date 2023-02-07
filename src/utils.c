@@ -115,6 +115,19 @@ uint32_t    count_num_bits(uint64_t n)
     return count;
 }
 
+uint32_t    count_num_bytes(uint64_t n)
+{
+    uint32_t count = 0;
+
+    if (!n)
+        return 1;
+    while (n) {
+        count++;
+        n >>= 8;
+    }
+    return count;
+}
+
 int     generate_rand_range(uint64_t *ret, uint64_t lower, uint64_t upper)
 {
     int fd = 0;

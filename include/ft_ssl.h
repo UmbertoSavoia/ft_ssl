@@ -75,6 +75,7 @@ void        pad_pkcs5(uint8_t *dest, uint32_t buf_len, uint32_t block_size);
 uint32_t    unpad_pkcs5(uint8_t *buf, uint32_t buf_len, uint32_t block_size);
 
 uint32_t    count_num_bits(uint64_t n);
+uint32_t    count_num_bytes(uint64_t n);
 int         generate_rand_range(uint64_t *ret, uint64_t lower, uint64_t upper);
 uint64_t    mul_mod(uint64_t a, uint64_t b, uint64_t m);
 uint64_t    power_mod(uint64_t a, uint64_t b, uint64_t m);
