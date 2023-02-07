@@ -1,4 +1,5 @@
 #include "ft_ssl.h"
+#include "ft_getopt.h"
 #include "rsa.h"
 #include "primes.h"
 #include "asn1.h"
@@ -76,7 +77,18 @@ int     genrsa(int ac, char **av)
 {
     t_rsa_key rsa_key = {0};
     rsa_key.e = PUB_EXP;
+    int fd_out = 1, idx = 0;
+    t_option opt[] = { {.name = "out", .has_arg = 1} };
+    ft_optind = 2;
 
+    while ((idx = ft_getopt_long(ac, av, opt, sizeof(opt) / sizeof(opt[0]))) != -1) {
+        switch (idx) {
+            case RSA_OPT_OUT:
+                if ((fd_out = ft_open(ft_optarg, O_WRONLY|O_CREAT)) < 0)
+                    return -1;
+                break;
+        }
+    }
     dprintf(2, "Generating RSA private key, %d bit long modulus (2 primes)\n", RSA_KEY_LEN);
     do {
         generate_prime_num(&rsa_key.p, RSA_KEY_LEN / 2);
@@ -84,21 +96,15 @@ int     genrsa(int ac, char **av)
     } while (rsa_key.p == rsa_key.q);
     if (rsa_key.p < rsa_key.q)
         swap(&(rsa_key.p), &(rsa_key.q));
-    // n = pq
-    rsa_key.n = rsa_key.p * rsa_key.q;
-    // phi = (p-1)(q-1)
-    rsa_key.phi = (rsa_key.p - 1) * (rsa_key.q - 1);
-    // d = e^-1 mod phi
-    rsa_key.d = mul_inv(rsa_key.e, rsa_key.phi);
-    // dp = d mod (p-1)
-    rsa_key.dp = rsa_key.d % (rsa_key.p - 1);
-    // dq = d mod (q-1)
-    rsa_key.dq = rsa_key.d % (rsa_key.q - 1);
-    // qInv = q^-1 mod p
-    rsa_key.qinv = mul_inv(rsa_key.q, rsa_key.p);
 
-    /*printf("n: %lX\ne: %lX\nd: %lX\np: %lX\nq: %lX\ndp: %lX\ndq: %lX\nqinv: %lX\nphi: %lX\n",
-           rsa_key.n, rsa_key.e, rsa_key.d, rsa_key.p, rsa_key.q, rsa_key.dp, rsa_key.dq, rsa_key.qinv, rsa_key.phi);*/
+    rsa_key.n = rsa_key.p * rsa_key.q;                          // n    = pq
+    rsa_key.phi = (rsa_key.p - 1) * (rsa_key.q - 1);            // phi  = (p-1)(q-1)
+    rsa_key.d = mul_inv(rsa_key.e, rsa_key.phi);       // d    = e^-1 mo d phi
+    rsa_key.dp = rsa_key.d % (rsa_key.p - 1);                   // dp   = d mod (p-1)
+    rsa_key.dq = rsa_key.d % (rsa_key.q - 1);                   // dq   = d mod (q-1)
+    rsa_key.qinv = mul_inv(rsa_key.q, rsa_key.p);      // qInv = q^-1 mod p
+
     dprintf(2, "e is %lu (0x%06lX)\n", rsa_key.e, rsa_key.e);
-    asn1_pkcs1_rsa_private_key(&rsa_key, 1);
+    asn1_pkcs1_rsa_private_key(&rsa_key, fd_out);
+    return 0;
 }

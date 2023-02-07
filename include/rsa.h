@@ -6,6 +6,8 @@
 #define RSA_KEY_LEN 64
 #define PUB_EXP 65537
 
+#define RSA_OPT_OUT 0
+
 typedef struct  s_rsa_key
 {
     uint64_t p;    // First factor
