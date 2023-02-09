@@ -13,7 +13,7 @@
 #if defined(__APPLE__)
     #define bswap_16(value) \
         ((((value) & 0xff) << 8) | ((value) >> 8))
-	#define bswap_32(value) \
+    #define bswap_32(value) \
         (((uint32_t)bswap_16((uint16_t)((value) & 0xffff)) << 16) | \
         (uint32_t)bswap_16((uint16_t)((value) >> 16)))
 #else

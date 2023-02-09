@@ -21,10 +21,69 @@ uint32_t    asn1_parse_len(uint8_t *buf, uint32_t *offset)
     }
     return ret;
 }
-/*
-void    asn1_parse_private_key(t_rsa_key *rsa, int fd_in, int fd_out)
-{
 
+uint64_t    asn1_parse_integer(uint8_t *buf, uint32_t *offset, uint32_t len_int)
+{
+    uint64_t ret = 0;
+
+    for (uint32_t i = 0; i < len_int-1; ++i, (*offset)++) {
+        ret |= buf[*offset];
+        ret <<= 8;
+    }
+    ret |= buf[(*offset)++];
+    return ret;
+}
+/*
+int    asn1_parse_private_key(t_rsa_key *rsa, int fd_in, int fd_out)
+{
+    uint8_t buf[] = {
+        0x30, 0x3f, 0x02, 0x01, 0x00,
+        0x02, 0x09,
+            0x00, 0xca, 0xb6, 0xc0, 0x5d, 0xdb, 0x74, 0xc0, 0xed,
+        0x02, 0x03,
+            0x01, 0x00, 0x01,
+        0x02, 0x08,
+            0x69, 0xf5, 0x3c, 0x76, 0xe3, 0xca, 0x64, 0x01,
+        0x02, 0x05,
+            0x00, 0xf8, 0x1e, 0xb3, 0x31,
+        0x02, 0x05,
+            0x00, 0xd1, 0x26, 0xe2, 0x7d,
+        0x02, 0x05,
+            0x00, 0xb5, 0x10, 0x2a, 0x31,
+        0x02, 0x04,
+            0x65, 0xd7, 0xb1, 0x61,
+        0x02, 0x05,
+            0x00, 0x9c, 0x73, 0x3a, 0x09
+    };
+    uint32_t offset = 0, len_sequence = 0;
+    //uint8_t buf[2048] = {0};
+
+    //ft_read(fd_in, buf, sizeof(buf));
+    if (buf[offset++] != ANS1_TAG_SEQUENCE) return -1;
+    len_sequence = asn1_parse_len(buf, &offset);
+    if (memcmp(&(buf[offset]), "\x02\x01\x00", 3)) return -1;
+    offset += 3;
+
+    if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
+    rsa->n = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
+    if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
+    rsa->e = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
+    if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
+    rsa->d = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
+    if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
+    rsa->p = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
+    if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
+    rsa->q = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
+    if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
+    rsa->dp = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
+    if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
+    rsa->dq = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
+    if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
+    rsa->qinv = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
+
+    printf("n: %lX\ne: %lX\nd: %lX\np: %lX\nq: %lX\ndp: %lX\ndq: %lX\nqinv: %lX\n",
+           rsa->n, rsa->e, rsa->d, rsa->p, rsa->q, rsa->dp, rsa->dq, rsa->qinv);
+    return 0;
 }
 */
 void    asn1_add_len(uint8_t *buf, uint32_t *offset, uint64_t len)
@@ -82,11 +141,11 @@ void    asn1_pkcs1_rsa_private_key(t_rsa_key *key, int fd_out)
     uint8_t der[1024] = {0}, tmp[1024] = {0};
     uint32_t len_tmp = 0, offset = 0;
 #if defined(__APPLE__)
-	if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777)) < 0)
+    if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777)) < 0)
 #else
     if ((fd_cache = memfd_create("cache", 0)) < 0)
 #endif
-		return;
+        return;
     asn1_add_integer(tmp, &len_tmp, 0); // version
     asn1_add_integer(tmp, &len_tmp, key->n);
     asn1_add_integer(tmp, &len_tmp, key->e);
@@ -109,6 +168,9 @@ void    asn1_pkcs1_rsa_private_key(t_rsa_key *key, int fd_out)
     dprintf(fd_out, "%s\n", "-----END RSA PRIVATE KEY-----");
 
     close(fd_cache);
+/*
+    t_rsa_key r = {0};
+    asn1_parse_private_key(&r, 0, 0); */
 }
 
 /*
@@ -151,7 +213,7 @@ void    asn1_pkcs1_rsa_public_key(t_rsa_key *key, int fd_out)
                                      0x01, 0x05, 0x00 };
 
 #if defined(__APPLE__)
-	if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777)) < 0)
+    if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777)) < 0)
 #else
     if ((fd_cache = memfd_create("cache", 0)) < 0)
 #endif

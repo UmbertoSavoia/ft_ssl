@@ -93,7 +93,7 @@ void    resolve_base64(t_mode_arg *args)
     if (!(args->flags & A_FLAG))
         return;
 #if defined(__APPLE__)
-	fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777);
+    fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777);
 #else
     fd_cache = memfd_create("cache", 0);
 #endif
