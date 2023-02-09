@@ -114,7 +114,7 @@ int     ft_digest(int ac, char **av)
                 digest_string(p_algo, ft_optarg, opt);
                 break;
             default:
-                printf("usage: %s %s [flags] [file/string]", av[0], p_algo->name_lo);
+                printf("usage: %s %s [-pqr] [-s string] [file]\n", av[0], p_algo->name_lo);
         }
     }
     ac -= ft_optind;
