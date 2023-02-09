@@ -81,9 +81,12 @@ void    asn1_pkcs1_rsa_private_key(t_rsa_key *key, int fd_out)
     int fd_cache = -1;
     uint8_t der[1024] = {0}, tmp[1024] = {0};
     uint32_t len_tmp = 0, offset = 0;
-
+#if defined(__APPLE__)
+	if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777)) < 0)
+#else
     if ((fd_cache = memfd_create("cache", 0)) < 0)
-        return;
+#endif
+		return;
     asn1_add_integer(tmp, &len_tmp, 0); // version
     asn1_add_integer(tmp, &len_tmp, key->n);
     asn1_add_integer(tmp, &len_tmp, key->e);
@@ -147,7 +150,11 @@ void    asn1_pkcs1_rsa_public_key(t_rsa_key *key, int fd_out)
                                      0xf7, 0x0d, 0x01, 0x01,
                                      0x01, 0x05, 0x00 };
 
+#if defined(__APPLE__)
+	if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777)) < 0)
+#else
     if ((fd_cache = memfd_create("cache", 0)) < 0)
+#endif
         return;
     memcpy(tmp, AlgorithmIdentifier, sizeof(AlgorithmIdentifier));
     len_tmp += sizeof(AlgorithmIdentifier);

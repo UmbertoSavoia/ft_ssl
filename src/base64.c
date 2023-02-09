@@ -48,7 +48,7 @@ void    decode_base64(int fd_in, int fd_out)
                 --r;
                 continue;
             }
-            idx[i] = (uint8_t *)strchr(table, in[i]) - table;
+            idx[i] = (uint8_t *)strchr((const char *)table, in[i]) - table;
             tmp |= idx[i] << (18 - (i * 6));
         }
         process_block_base64(fd_out, tmp, r, DECODE_BASE64);

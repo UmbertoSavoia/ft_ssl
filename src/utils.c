@@ -44,7 +44,7 @@ uint8_t *str_to_hex(char *s, uint32_t bytes)
 
     for (uint32_t i = 0, j = 0; padded[j]; ++i, j += 2) {
         memcpy(in, &padded[j], 2);
-        out[i] = strtol(in, 0, 16);
+        out[i] = strtol((const char *)in, 0, 16);
     }
     free(padded);
     return out;
@@ -65,8 +65,8 @@ int     key_derivation(t_mode_arg *args, uint32_t block_size)
     if (!(derived = malloc(block_size)))
         return -1;
     pbkdf2(&hash,
-           args->pass, strlen(args->pass),
-           args->salt, strlen(args->salt),
+           (uint8_t *)args->pass, strlen((const char *)args->pass),
+           args->salt, strlen((const char *)args->salt),
            PBKDF_ITERATIONS_DEFAULT,
             derived, block_size);
     args->key = derived;
@@ -92,7 +92,11 @@ void    resolve_base64(t_mode_arg *args)
 
     if (!(args->flags & A_FLAG))
         return;
+#if defined(__APPLE__)
+	fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777);
+#else
     fd_cache = memfd_create("cache", 0);
+#endif
     if (args->flags & E_FLAG) {
         args->fd_cache = args->fd_out;
         args->fd_out = fd_cache;

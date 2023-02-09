@@ -10,7 +10,15 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <byteswap.h>
+#if defined(__APPLE__)
+    #define bswap_16(value) \
+        ((((value) & 0xff) << 8) | ((value) >> 8))
+	#define bswap_32(value) \
+        (((uint32_t)bswap_16((uint16_t)((value) & 0xffff)) << 16) | \
+        (uint32_t)bswap_16((uint16_t)((value) >> 16)))
+#else
+    #include <byteswap.h>
+#endif
 #include <errno.h>
 #include <math.h>
 
