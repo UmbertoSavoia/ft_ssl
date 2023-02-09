@@ -53,7 +53,7 @@ int    dispatcher(int ac, char **av)
             { .algo = "genrsa",    .func = &genrsa },
     };
 
-    for (int i = 0; (i < ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {
+    for (int i = 0; (i < (int)ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {
         if (!memcmp(av[1], dispatch[i].algo, strlen(av[1])))
             return dispatch[i].func(ac, av);
     }

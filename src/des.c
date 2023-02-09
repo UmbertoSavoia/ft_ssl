@@ -94,6 +94,7 @@ void    des_init(uint8_t *key, uint32_t key_len)
 {
     uint32_t i = 0, c = 0, d = 0, t = 0;
 
+    (void) key_len;
     bzero(&ctx, sizeof(t_des_ctx));
     c = LOAD_DWORD_BIG(key + 0);
     d = LOAD_DWORD_BIG(key + 4);

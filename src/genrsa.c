@@ -104,7 +104,11 @@ int     genrsa(int ac, char **av)
     rsa_key.dq = rsa_key.d % (rsa_key.q - 1);                   // dq   = d mod (q-1)
     rsa_key.qinv = mul_inv(rsa_key.q, rsa_key.p);      // qInv = q^-1 mod p
 
+#if defined(__APPLE__)
     dprintf(2, "e is %llu (0x%06llX)\n", rsa_key.e, rsa_key.e);
+#else
+    dprintf(2, "e is %lu (0x%06lX)\n", rsa_key.e, rsa_key.e);
+#endif
     asn1_pkcs1_rsa_private_key(&rsa_key, fd_out);
     return 0;
 }

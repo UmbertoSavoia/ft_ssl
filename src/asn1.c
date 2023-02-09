@@ -21,19 +21,19 @@ uint32_t    asn1_parse_len(uint8_t *buf, uint32_t *offset)
     }
     return ret;
 }
-
+/*
 void    asn1_parse_private_key(t_rsa_key *rsa, int fd_in, int fd_out)
 {
 
 }
-
+*/
 void    asn1_add_len(uint8_t *buf, uint32_t *offset, uint64_t len)
 {
     uint32_t bytes_len = count_num_bytes(len);
 
     if ((bytes_len > 1) || (len & 0x80)) {
         buf[(*offset)++] = bytes_len | 0x80;
-        for (int i = 0; i < bytes_len; i++) {
+        for (uint32_t i = 0; i < bytes_len; i++) {
             buf[*offset + bytes_len - i - 1] = len & 0xff;
             len >>= 8;
         }
@@ -54,7 +54,7 @@ void    asn1_add_integer(uint8_t *buf, uint32_t *offset, uint64_t n)
 
     asn1_add_len(buf, offset, bytes_n);
 
-    for (int i = 0; i < bytes_n; i++) {
+    for (uint32_t i = 0; i < bytes_n; i++) {
         buf[*offset + bytes_n - i - 1] = n & 0xff;
         n >>= 8;
     }

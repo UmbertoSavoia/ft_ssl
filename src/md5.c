@@ -58,7 +58,7 @@ void    md5_transform(uint32_t m[])
     uint32_t D = ctx.state[3];
     uint32_t FF = 0, g = 0;
 
-    for (uint32_t i = 0; i < 64; ++i) {
+    for (int i = 0; i < 64; ++i) {
         if (0 <= i && i <= 15) {
             FF = F(B, C, D);
             g = i;

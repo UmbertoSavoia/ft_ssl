@@ -92,7 +92,7 @@ int     ft_digest(int ac, char **av)
     int c = 0;
     ft_optind = 2;
 
-    for (int i = 0; (i < ARRAY_SIZE(algo)) && ac >= 1; ++i)
+    for (int i = 0; (i < (int)ARRAY_SIZE(algo)) && ac >= 1; ++i)
         if (!memcmp(algo[i].name_lo, av[1], strlen(algo[i].name_lo)))
             p_algo = &algo[i];
 

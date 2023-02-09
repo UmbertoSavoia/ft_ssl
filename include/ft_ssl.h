@@ -29,7 +29,7 @@
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 #define PRINT_HEX(digest, n)        \
     do {                               \
-        for (int i = 0; i < n; ++i) {  \
+        for (uint32_t i = 0; i < n; ++i) {  \
             printf("%02x", digest[i]); \
         }                              \
     } while (0)
