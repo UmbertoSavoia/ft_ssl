@@ -6,7 +6,19 @@
 #define RSA_KEY_LEN 64
 #define PUB_EXP 65537
 
-#define RSA_OPT_OUT 0
+#define RSA_OPT_OUT     0
+#define RSA_OPT_IN      1
+#define RSA_OPT_INFORM  2
+#define RSA_OPT_OUTFORM 3
+#define RSA_OPT_TEXT    4
+#define RSA_OPT_NOOUT   5
+#define RSA_OPT_PUBIN   6
+#define RSA_OPT_PUBOUT  7
+
+#define RSA_FLAG_NOOUT  0b00000001
+#define RSA_FLAG_TEXT   0b00000010
+#define RSA_FLAG_PUBIN  0b00000100
+#define RSA_FLAG_PUBOUT 0b00001000
 
 typedef struct  s_rsa_key
 {

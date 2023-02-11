@@ -37,7 +37,6 @@ int    dispatcher(int ac, char **av)
             { .algo = "sha256",     .func = &ft_digest },
             { .algo = "whirlpool",  .func = &ft_digest },
             { .algo = "base64",     .func = &ft_base64 },
-            //{ .algo = "des",       .func = &ft_cipher },
             { .algo = "des-ecb",    .func = &ft_cipher },
             { .algo = "des-cbc",    .func = &ft_cipher },
             { .algo = "des-pcbc",   .func = &ft_cipher },
@@ -51,6 +50,7 @@ int    dispatcher(int ac, char **av)
             { .algo = "des3-ofb",  .func = &ft_cipher },
             { .algo = "des3-ctr",  .func = &ft_cipher },
             { .algo = "genrsa",    .func = &genrsa },
+            { .algo = "rsa",       .func = &rsa },
     };
 
     for (int i = 0; (i < (int)ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {

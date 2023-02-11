@@ -1,6 +1,6 @@
 TARGET = ft_ssl
 CC = gcc
-CFLAG = -g -Wall -Wextra -Werror
+CFLAG = -g #-Wall -Wextra -Werror
 RM = rm -rf
 
 INC = ./include/

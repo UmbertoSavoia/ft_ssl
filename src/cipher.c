@@ -13,7 +13,7 @@ uint32_t search_cipher(t_cipher *ciphers, uint32_t len_ciphers, char *name)
     return 0;
 }
 
-void    get_option(int ac, char **av, t_mode_arg *args, uint32_t key_size, uint32_t block_size)
+void    get_option_cipher(int ac, char **av, t_mode_arg *args, uint32_t key_size, uint32_t block_size)
 {
     int c = 0;
 
@@ -69,7 +69,7 @@ int     ft_cipher(int ac, char **av)
     uint32_t idx_cipher = 0;
 
     idx_cipher = search_cipher(ciphers, sizeof(ciphers) / sizeof(ciphers[0]),av[1]);
-    get_option(ac, av, &args, ciphers[idx_cipher].key_size, ciphers[idx_cipher].block_size);
+    get_option_cipher(ac, av, &args, ciphers[idx_cipher].key_size, ciphers[idx_cipher].block_size);
     resolve_base64(&args);
 
     if (!key_derivation(&args, ciphers[idx_cipher].key_size)) {

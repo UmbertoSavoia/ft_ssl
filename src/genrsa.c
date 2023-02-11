@@ -81,10 +81,10 @@ int     genrsa(int ac, char **av)
     t_option opt[] = { {.name = "out", .has_arg = 1} };
     ft_optind = 2;
 
-    while ((idx = ft_getopt_long(ac, av, opt, sizeof(opt) / sizeof(opt[0]))) != -1) {
+    while ((idx = ft_getopt_long(ac, av, opt, ARRAY_SIZE(opt))) != -1) {
         switch (idx) {
             case RSA_OPT_OUT:
-                if ((fd_out = ft_open(ft_optarg, O_WRONLY|O_CREAT)) < 0)
+                if ((fd_out = ft_open(ft_optarg, O_RDWR|O_CREAT)) < 0)
                     return -1;
                 break;
         }

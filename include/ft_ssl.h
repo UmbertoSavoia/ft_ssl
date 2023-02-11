@@ -72,6 +72,7 @@ int         ft_digest(int ac, char **av);
 int         ft_base64(int ac, char **av);
 int         ft_cipher(int ac, char **av);
 int         genrsa(int ac, char **av);
+int         rsa(int ac, char **av);
 
 size_t      ft_read(int fd, void *buf, size_t count);
 int         ft_open(char *file, int flag);
