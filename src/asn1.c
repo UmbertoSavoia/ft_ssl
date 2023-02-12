@@ -36,21 +36,21 @@ uint64_t    asn1_parse_integer(uint8_t *buf, uint32_t *offset, uint32_t len_int)
 
 int     asn1_parse_der_public_key(t_rsa_key *rsa, uint8_t *buf)
 {
-    uint32_t offset = 0, len_sequence = 0;
+    uint32_t offset = 0;
     uint8_t AlgorithmIdentifier[] = { 0x30, 0x0d, 0x06, 0x09,
                                       0x2a, 0x86, 0x48, 0x86,
                                       0xf7, 0x0d, 0x01, 0x01,
                                       0x01, 0x05, 0x00 };
 
     if (buf[offset++] != ANS1_TAG_SEQUENCE) return -1;
-    len_sequence = asn1_parse_len(buf, &offset);
+    asn1_parse_len(buf, &offset);
     if (memcmp(&(buf[offset]), AlgorithmIdentifier, sizeof(AlgorithmIdentifier))) return -1;
     offset += sizeof(AlgorithmIdentifier);
     if (buf[offset++] != ASN1_TAG_BITSTRING) return -1;
-    len_sequence = asn1_parse_len(buf, &offset);
+    asn1_parse_len(buf, &offset);
     if (buf[offset++] != 0x00) return -1;
     if (buf[offset++] != ANS1_TAG_SEQUENCE) return -1;
-    len_sequence = asn1_parse_len(buf, &offset);
+    asn1_parse_len(buf, &offset);
     if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
     rsa->n = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
     if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
@@ -61,10 +61,10 @@ int     asn1_parse_der_public_key(t_rsa_key *rsa, uint8_t *buf)
 
 int     asn1_parse_der_private_key(t_rsa_key *rsa, uint8_t *buf)
 {
-    uint32_t offset = 0, len_sequence = 0;
+    uint32_t offset = 0;
 
     if (buf[offset++] != ANS1_TAG_SEQUENCE) return -1;
-    len_sequence = asn1_parse_len(buf, &offset);
+    asn1_parse_len(buf, &offset);
     if (memcmp(&(buf[offset]), "\x02\x01\x00", 3)) return -1;
     offset += 3;
 
@@ -85,8 +85,6 @@ int     asn1_parse_der_private_key(t_rsa_key *rsa, uint8_t *buf)
     if (buf[offset++] != ASN1_TAG_INTEGER) return -1;
     rsa->qinv = asn1_parse_integer(buf, &offset, asn1_parse_len(buf, &offset));
 
-    /*printf("n: %lX\ne: %lX\nd: %lX\np: %lX\nq: %lX\ndp: %lX\ndq: %lX\nqinv: %lX\n",
-           rsa->n, rsa->e, rsa->d, rsa->p, rsa->q, rsa->dp, rsa->dq, rsa->qinv);*/
     return 0;
 }
 

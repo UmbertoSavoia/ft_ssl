@@ -3,7 +3,7 @@
 #include "rsa.h"
 #include "asn1.h"
 
-int     get_option_breakit(int ac, char **av, t_option *opt, uint32_t size_opt, t_rsa_key *key, int *fd_in, int *fd_out, uint8_t *flag)
+int     get_option_breakit(int ac, char **av, t_option *opt, uint32_t size_opt, t_rsa_key *key, int *fd_out, uint8_t *flag)
 {
     int idx = 0, fd = 0;
     char *key_file = 0;
@@ -39,6 +39,7 @@ int     get_option_breakit(int ac, char **av, t_option *opt, uint32_t size_opt, 
         }
     }
     close(fd);
+    return 0;
 }
 
 int     breakit(int ac, char **av)
@@ -53,11 +54,11 @@ int     breakit(int ac, char **av)
             { .name = "pubin",    .has_arg = 0 },
     };
     t_rsa_key rsa_key = {0};
-    int fd_in = 0, fd_out = 1;
+    int fd_out = 1;
     uint8_t flag = 0;
     ft_optind = 2;
 
-    if (get_option_breakit(ac, av, opt, ARRAY_SIZE(opt), &rsa_key, &fd_in, &fd_out, &flag) < 0)
+    if (get_option_breakit(ac, av, opt, ARRAY_SIZE(opt), &rsa_key, &fd_out, &flag) < 0)
         return 0;
 
     int prime = 2;
@@ -67,6 +68,6 @@ int     breakit(int ac, char **av)
         }
     }
 
-    if (fd_in != 0) close(fd_in);
     if (fd_out != 1) close(fd_out);
+    return 0;
 }

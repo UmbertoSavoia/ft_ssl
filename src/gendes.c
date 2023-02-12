@@ -26,4 +26,5 @@ int     gendes(int ac, char **av)
     for (int i = 0; i < DES_BLOCK_SIZE; ++i)
         dprintf(fd_out, "%02x", buf[i]);
     dprintf(fd_out, "\n");
+    return 0;
 }

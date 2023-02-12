@@ -61,12 +61,12 @@ int    get_option_rsautl(int ac, char **av, t_option *opt, uint32_t size_opt, t_
 void    rsautl_hexdump(uint64_t output, int fd_out)
 {
     dprintf(fd_out, "%04x - ", 0);
-    for (int i = 0; i < sizeof(uint64_t); ++i)
-        dprintf(fd_out, "%02x ", (output >> (i*8)) & 0xff);
+    for (size_t i = 0; i < sizeof(uint64_t); ++i)
+        dprintf(fd_out, "%02lx ", (output >> (i*8)) & 0xff);
     dprintf(fd_out, "  ");
-    for (int i = 0; i < sizeof(uint64_t); ++i)
+    for (size_t i = 0; i < sizeof(uint64_t); ++i)
         dprintf(fd_out, "%c",
-                isprint((output >> (i*8)) & 0xff) ? (output >> (i*8)) & 0xff : '.');
+                isprint((output >> (i*8)) & 0xff) ? (char)(output >> (i*8)) & 0xff : '.');
     dprintf(fd_out, "\n");
 }
 
@@ -115,4 +115,5 @@ int     rsautl(int ac, char **av)
 
     if (fd_in != 0) close(fd_in);
     if (fd_out != 1) close(fd_out);
+    return 0;
 }
