@@ -51,6 +51,9 @@ int    dispatcher(int ac, char **av)
             { .algo = "des3-ctr",  .func = &ft_cipher },
             { .algo = "genrsa",    .func = &genrsa },
             { .algo = "rsa",       .func = &rsa },
+            { .algo = "rsautl",    .func = &rsautl },
+            { .algo = "gendes",    .func = &gendes },
+            { .algo = "breakit",   .func = &breakit },
     };
 
     for (int i = 0; (i < (int)ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {

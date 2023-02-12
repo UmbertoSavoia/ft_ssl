@@ -34,7 +34,7 @@ loop:
     return 0;
 }
 
-int      miller_rabin(uint64_t p, int iteration)
+int      miller_rabin(uint64_t p, int iteration, uint8_t print)
 {
     int i = 0;
     uint64_t s = 0;
@@ -54,7 +54,8 @@ int      miller_rabin(uint64_t p, int iteration)
         }
         if (mod != p - 1 && temp % 2 == 0)
             return 0;
-        write(2, "+", 1);
+        if (print)
+            write(2, "+", 1);
     }
     return 1;
 }
@@ -66,7 +67,7 @@ int     generate_prime_num(uint64_t *ret, int bits)
     while (1) {
         sieve_zimmermann(ret, bits);
         write(2, ".", 1);
-        if (miller_rabin(*ret, iterations))
+        if (miller_rabin(*ret, iterations, 1))
             break;
     }
     write(2, "\n", 1);

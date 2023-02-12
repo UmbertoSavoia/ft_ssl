@@ -14,11 +14,18 @@
 #define RSA_OPT_NOOUT   5
 #define RSA_OPT_PUBIN   6
 #define RSA_OPT_PUBOUT  7
+#define RSA_OPT_INKEY   8
+#define RSA_OPT_ENC     9
+#define RSA_OPT_DEC     10
+#define RSA_OPT_HEX     11
 
 #define RSA_FLAG_NOOUT  0b00000001
 #define RSA_FLAG_TEXT   0b00000010
 #define RSA_FLAG_PUBIN  0b00000100
 #define RSA_FLAG_PUBOUT 0b00001000
+#define RSA_FLAG_ENC    0b00010000
+#define RSA_FLAG_DEC    0b00100000
+#define RSA_FLAG_HEX    0b01000000
 
 typedef struct  s_rsa_key
 {
@@ -32,5 +39,7 @@ typedef struct  s_rsa_key
     uint64_t qinv; // CRT coefficient
     uint64_t phi;  // Totient
 }               t_rsa_key;
+
+int      miller_rabin(uint64_t p, int iteration, uint8_t print);
 
 #endif

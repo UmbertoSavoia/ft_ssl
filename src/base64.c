@@ -66,11 +66,11 @@ int     ft_base64(int ac, char **av)
     while ((c = ft_getopt(ac, av, "i:o:ed")) != -1) {
         switch (c) {
             case 'i':
-                if ((fd_in = ft_open(ft_optarg, O_RDONLY)) < 0)
+                if ((fd_in = ft_open(ft_optarg, O_RDWR)) < 0)
                     return 1;
                 break;
             case 'o':
-                if ((fd_out = ft_open(ft_optarg, O_WRONLY|O_CREAT)) < 0)
+                if ((fd_out = ft_open(ft_optarg, O_RDWR|O_CREAT)) < 0)
                     return 1;
                 break;
             case 'd':

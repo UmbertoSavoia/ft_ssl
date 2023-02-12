@@ -205,7 +205,7 @@ void    asn1_pkcs1_rsa_private_key(t_rsa_key *key, int fd_out)
     uint8_t der[1024] = {0}, tmp[1024] = {0};
     uint32_t len_tmp = 0, offset = 0;
 #if defined(__APPLE__)
-    if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777)) < 0)
+    if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0666)) < 0)
 #else
     if ((fd_cache = memfd_create("cache", 0)) < 0)
 #endif
@@ -274,7 +274,7 @@ void    asn1_pkcs1_rsa_public_key(t_rsa_key *key, int fd_out)
                                      0x01, 0x05, 0x00 };
 
 #if defined(__APPLE__)
-    if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777)) < 0)
+    if ((fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0666)) < 0)
 #else
     if ((fd_cache = memfd_create("cache", 0)) < 0)
 #endif

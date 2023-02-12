@@ -10,7 +10,7 @@ int    get_option_rsa(int ac, char **av, t_option *opt, uint32_t size_opt, int *
     while ((idx = ft_getopt_long(ac, av, opt, size_opt)) != -1) {
         switch (idx) {
             case RSA_OPT_OUT:
-                if ((*fd_out = open(ft_optarg, O_RDWR|O_CREAT)) < 0)
+                if ((*fd_out = open(ft_optarg, O_RDWR|O_CREAT, 0666)) < 0)
                     return -1;
                 break;
             case RSA_OPT_IN:

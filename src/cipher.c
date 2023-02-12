@@ -24,7 +24,7 @@ void    get_option_cipher(int ac, char **av, t_mode_arg *args, uint32_t key_size
                     return ;
                 break;
             case 'o':
-                if ((args->fd_out = ft_open(ft_optarg, O_WRONLY|O_CREAT)) < 0)
+                if ((args->fd_out = ft_open(ft_optarg, O_RDWR|O_CREAT)) < 0)
                     return ;
                 break;
             case 'k':

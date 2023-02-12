@@ -93,7 +93,7 @@ void    resolve_base64(t_mode_arg *args)
     if (!(args->flags & A_FLAG))
         return;
 #if defined(__APPLE__)
-    fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0777);
+    fd_cache = open("/tmp/cache", O_CREAT | O_RDWR, 0666);
 #else
     fd_cache = memfd_create("cache", 0);
 #endif
@@ -145,30 +145,42 @@ int     generate_rand_range(uint64_t *ret, uint64_t lower, uint64_t upper)
     return 0;
 }
 
-// (a*b) (mod n)
+// (a+b) (mod m)
+uint64_t add_mod(uint64_t a, uint64_t b, uint64_t m)
+{
+    uint64_t tmp = 0;
+
+    a %= m;
+    b %= m;
+    if ((m - a) <= b) {
+        tmp = m - a;
+        return b - tmp;
+    }
+    return (a + b) % m;
+}
+
+// (a*b) (mod m)
 uint64_t mul_mod(uint64_t a, uint64_t b, uint64_t m)
 {
-    uint64_t d = 0, mp2 = m >> 1;
+    uint64_t d = 0;
 
-    if (a >= m)
-        a %= m;
-    if (b >= m)
-        b %= m;
-    for (int i = 0; i < 64; ++i) {
-        d = (d > mp2) ? (d << 1) - m : d << 1;
-        if (a & 0x8000000000000000ULL)
-            d += b;
-        if (d >= m)
-            d -= m;
-        a <<= 1;
+    a %= m;
+    b %= m;
+
+    while(b) {
+        if(b & 0x1)
+            d = add_mod(d, a, m);
+        a = add_mod(a, a, m);
+        b >>= 1;
     }
     return d;
 }
 
 // (a^b) (mod m)
-uint64_t power_mod(uint64_t a, uint64_t b, uint64_t m)
+__int128_t power_mod(__int128_t a, __int128_t b, __int128_t m)
 {
-    uint64_t r = m == 1 ? 0 : 1;
+    __int128_t r = 1;
+    a %= m; b %= m;
     while (b > 0) {
         if (b & 1)
             r = mul_mod(r, a, m);
