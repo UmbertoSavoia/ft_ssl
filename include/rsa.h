@@ -40,6 +40,4 @@ typedef struct  s_rsa_key
     uint64_t phi;  // Totient
 }               t_rsa_key;
 
-int      miller_rabin(uint64_t p, int iteration, uint8_t print);
-
 #endif

@@ -1,5 +1,6 @@
 #include "ft_ssl.h"
 #include "rsa.h"
+#include "dsa.h"
 #include "asn1.h"
 #include "ft_base64.h"
 
@@ -180,6 +181,61 @@ void    asn1_add_integer(uint8_t *buf, uint32_t *offset, uint64_t n)
         n >>= 8;
     }
     *offset += bytes_n;
+}
+
+void    asn1_pkcs1_dsa_param(t_dsa_param *param, int fd_out)
+{
+    int fd_cache = -1;
+    uint8_t der[1024] = {0}, tmp[1024] = {0};
+    uint32_t len_tmp = 0, offset = 0;
+
+    if ((fd_cache = memfd_create("cache", 0)) < 0)
+        return;
+    asn1_add_integer(tmp, &len_tmp, param->p);
+    asn1_add_integer(tmp, &len_tmp, param->q);
+    asn1_add_integer(tmp, &len_tmp, param->g);
+
+    der[offset++] = ANS1_TAG_SEQUENCE;
+    asn1_add_len(der, &offset, len_tmp);
+    memcpy(&(der[offset]), tmp, len_tmp);
+    offset += len_tmp;
+
+    write(fd_cache, der, offset);
+    lseek(fd_cache, 0, SEEK_SET);
+    dprintf(fd_out, "%s\n", PEM_HEADER_DSA_PARAM);
+    encode_base64(fd_cache, fd_out);
+    dprintf(fd_out, "%s\n", PEM_FOOTER_DSA_PARAM);
+
+    close(fd_cache);
+}
+
+void    asn1_pkcs1_dsa_private_key(t_dsa_key_priv *key, int fd_out)
+{
+    int fd_cache = -1;
+    uint8_t der[1024] = {0}, tmp[1024] = {0};
+    uint32_t len_tmp = 0, offset = 0;
+
+    if ((fd_cache = memfd_create("cache", 0)) < 0)
+        return;
+    asn1_add_integer(tmp, &len_tmp, 0); // version
+    asn1_add_integer(tmp, &len_tmp, key->param.p);
+    asn1_add_integer(tmp, &len_tmp, key->param.q);
+    asn1_add_integer(tmp, &len_tmp, key->param.g);
+    asn1_add_integer(tmp, &len_tmp, key->pub);
+    asn1_add_integer(tmp, &len_tmp, key->priv);
+
+    der[offset++] = ANS1_TAG_SEQUENCE;
+    asn1_add_len(der, &offset, len_tmp);
+    memcpy(&(der[offset]), tmp, len_tmp);
+    offset += len_tmp;
+
+    write(fd_cache, der, offset);
+    lseek(fd_cache, 0, SEEK_SET);
+    dprintf(fd_out, "%s\n", PEM_HEADER_DSA_PRIVATE);
+    encode_base64(fd_cache, fd_out);
+    dprintf(fd_out, "%s\n", PEM_FOOTER_DSA_PRIVATE);
+
+    close(fd_cache);
 }
 
 /*

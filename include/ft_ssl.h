@@ -77,6 +77,10 @@ int         rsa(int ac, char **av);
 int         rsautl(int ac, char **av);
 int         gendes(int ac, char **av);
 int         breakit(int ac, char **av);
+int         gendsa(int ac, char **av);
+
+int         generate_prime_num(uint64_t *ret, int bits);
+int         miller_rabin(uint64_t p, int iteration, uint8_t print);
 
 size_t      ft_read(int fd, void *buf, size_t count);
 int         ft_open(char *file, int flag);
@@ -87,12 +91,12 @@ void        resolve_base64(t_mode_arg *args);
 void        pad_pkcs5(uint8_t *dest, uint32_t buf_len, uint32_t block_size);
 uint32_t    unpad_pkcs5(uint8_t *buf, uint32_t buf_len, uint32_t block_size);
 
-uint32_t      count_num_bits(uint64_t n);
-uint32_t      count_num_bytes(uint64_t n);
-int           generate_rand_range(uint64_t *ret, uint64_t lower, uint64_t upper);
-uint64_t      mul_mod(uint64_t a, uint64_t b, uint64_t m);
-__int128_t    power_mod(__int128_t a, __int128_t b, __int128_t m);
-void          swap(uint64_t *a, uint64_t *b);
-__int128_t    mul_inv(__int128_t n, __int128_t mod);
+uint32_t    count_num_bits(uint64_t n);
+uint32_t    count_num_bytes(uint64_t n);
+int         generate_rand_range(uint64_t *ret, uint64_t lower, uint64_t upper);
+uint64_t    mul_mod(uint64_t a, uint64_t b, uint64_t m);
+__int128_t  power_mod(__int128_t a, __int128_t b, __int128_t m);
+void        swap(uint64_t *a, uint64_t *b);
+__int128_t  mul_inv(__int128_t n, __int128_t mod);
 
 #endif

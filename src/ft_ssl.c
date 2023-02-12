@@ -54,6 +54,7 @@ int    dispatcher(int ac, char **av)
             { .algo = "rsautl",    .func = &rsautl },
             { .algo = "gendes",    .func = &gendes },
             { .algo = "breakit",   .func = &breakit },
+            { .algo = "gendsa",    .func = &gendsa },
     };
 
     for (int i = 0; (i < (int)ARRAY_SIZE(dispatch)) && ac >= 1; ++i) {
